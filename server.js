@@ -47,11 +47,17 @@ var validateForm = (validForm) => {
 };
 
 var getEPEsFromDB = (mode, user) => {
+  var name;
+  if (mode === 'approve'){
+    name = 'Bob';
+  } else if (mode === 'archive'){
+    name = 'Bill'
+  }
   var dummyArray = [];
   while (dummyArray.length !== 5){
     dummyArray.push({
       id: new ObjectID().toHexString(),
-      name: `Bob # ${dummyArray.length+1}`,
+      name: `${name} # ${dummyArray.length+1}`,
       SAPNum: Math.round(Math.random() * 100)
     });
   }
