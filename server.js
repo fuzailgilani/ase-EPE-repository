@@ -16,7 +16,30 @@ const port = process.env.PORT;
 // DUMMY FUNCTIONS FOR now
 
 var verifyCredentials = (loginCredentials) => {
-  return loginCredentials.success === "success";
+  const dummyLoginCredentials = [{
+      userName: "employee1",
+      pass: "password1"
+    },{
+      userName: "employee2",
+      pass: "password2"
+    },{
+      userName: "employee3",
+      password: "password3"
+    },{
+      userName: "employee4",
+      pass: "password4"
+    },{
+      userName: "employee5",
+      pass: "password5"
+    }
+  ];
+  var i;
+  for(i = 0; i < dummyLoginCredentials.length; i++){
+    if(dummyLoginCredentials[i].userName === loginCredentials.userName && dummyLoginCredentials[i].pass === loginCredentials.pass){
+      return true;
+    }
+  }
+  return false;
 };
 
 var validateForm = (validForm) => {
@@ -97,7 +120,7 @@ app.get('/', (req,res) => {
   console.log('GET /');
   var body = _.pick(req.query, ['errorMessage']);
 
-  res.render('login.hbs', body); //TODO create login html/angular page
+  res.render('login.hbs', body);
 });
 
 app.post('/', (req,res) => {
@@ -105,8 +128,7 @@ app.post('/', (req,res) => {
   console.log(req.body);
   var loginCredentials = { // fetch login credentials from request
     userName: req.body.userName,
-    pass: req.body.pass,
-    success: req.body.success
+    pass: req.body.password
   }
 
   if (verifyCredentials(loginCredentials)){ // TODO create verifyCredentials method
