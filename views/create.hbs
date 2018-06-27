@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Some Website</title>
+  </head>
+  <body>
+    <h1>This is a dummy create page. Submit the form to proceed.</h1>
+
+    <p>You can select whether you want the form to be considered "valid" or not. Validating forms is functionality that I will add to the server in a later sprint.</p>
+    <p>We will need to add in the functionality for form validation as the semester carries on.</p>
+
+    {{#if errorMessages}}
+    <p>{{errorMessages}}</p>
+    {{/if}}
+
+    <form action="/create" method="post">
+      Employee:<br>
+      <input type="text" name="employeeName">
+      <br>
+      Whatever:<br>
+      <input type="text" name="somethingElse">
+      <br><br>
+      Do you want to this form to be valid or not?:<br>
+      <input type="radio" name="validOrNot" value="validate" checked> Valid<br>
+      <input type="radio" name="validOrNot" value="invalidate"> Invalid<br>
+      <input type="submit" value="Submit Form">
+    </form>
+
+  </body>
+</html>

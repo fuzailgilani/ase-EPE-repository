@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Some Website</title>
+  </head>
+  <body>
+    <h1>This is a dummy login page. Press the login button to proceed.</h1>
+
+    <p>For the sake of this sprint, I have created the architecture of the backend, but filled it out with dummy functions.</p><br>
+    <p>Most, if not all, of the required routes for the finished product have been defined. As the summer continues, we will replace the dummy functions with the desired business logic and functionality.</p>
+    <p>For now, each page will display directions for how to test each route.</p>
+    <p>This demo also has a fully functioning database, but this front-end demo does not utilize it.</p>
+
+    <p>Indicate whether you want the login to fail or succeed.</p>
+    <p>After a successful login, click the /home link to continue.</p>
+
+    {{#if errorMessage}}
+    <p>{{errorMessage}}</p>
+    {{/if}}
+
+    <form action="/" method="post">
+      Username:<br>
+      <input type="text" name="userName">
+      <br>
+      Password:<br>
+      <input type="password" name="password"><br>
+      Do you want this login to succeed or fail?:<br>
+      <input type="radio" name="success" value="success" checked> Succeed<br>
+      <input type="radio" name="success" value="fail"> Fail<br>
+      <br><br>
+      <input type="submit" value="Log In">
+    </form>
+
+  </body>
+</html>

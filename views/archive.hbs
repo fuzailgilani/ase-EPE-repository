@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Some Website</title>
+  </head>
+  <body>
+    <h1>This is a dummy approve page. Press the home button or a link.</h1>
+
+    <p>The dummy functions on the server end are generating MongoDB ids rather than fetching them from the database.</p>
+    <p>This page is basically identical to the /approve page, and the two can possibly be merged to avoid redundancy.</p>
+
+    {{#if id}}
+    <p>You clicked the link for the form with id: {{id}}</p>
+    {{/if}}
+    <table>
+      <tr>
+        <th>SAP Number</th>
+        <th>Employee Name</th>
+        <th>Form ID</th>
+        <th>Link</th>
+      </tr>
+      <tr>
+        <td>{{arrayOfFormIds.[0].SAPNum}}</td>
+        <td>{{arrayOfFormIds.[0].name}}</td>
+        <td>{{arrayOfFormIds.[0].id}}</td>
+        <td><a href="/archive/{{arrayOfFormIds.[0].id}}">Link to Form</a></td>
+      </tr>
+      <tr>
+        <td>{{arrayOfFormIds.[1].SAPNum}}</td>
+        <td>{{arrayOfFormIds.[1].name}}</td>
+        <td>{{arrayOfFormIds.[1].id}}</td>
+        <td><a href="/archive/{{arrayOfFormIds.[1].id}}">Link to Form</a></td>
+      </tr>
+      <tr>
+        <td>{{arrayOfFormIds.[2].SAPNum}}</td>
+        <td>{{arrayOfFormIds.[2].name}}</td>
+        <td>{{arrayOfFormIds.[2].id}}</td>
+        <td><a href="/archive/{{arrayOfFormIds.[2].id}}">Link to Form</a></td>
+      </tr>
+      <tr>
+        <td>{{arrayOfFormIds.[3].SAPNum}}</td>
+        <td>{{arrayOfFormIds.[3].name}}</td>
+        <td>{{arrayOfFormIds.[3].id}}</td>
+        <td><a href="/archive/{{arrayOfFormIds.[3].id}}">Link to Form</a></td>
+      </tr>
+      <tr>
+        <td>{{arrayOfFormIds.[4].SAPNum}}</td>
+        <td>{{arrayOfFormIds.[4].name}}</td>
+        <td>{{arrayOfFormIds.[4].id}}</td>
+        <td><a href="/archive/{{arrayOfFormIds.[4].id}}">Link to Form</a></td>
+      </tr>
+    </table>
+
+    <form action="/home" method="get">
+      <input type="submit" value="Home">
+    </form>
+
+  </body>
+</html>
