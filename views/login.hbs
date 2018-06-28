@@ -33,7 +33,9 @@
 			<center><h1 id ="title">EPE Login</h1></center>
 			<center>
         {{#if errorMessage}}
-        <p>{{errorMessage}}</p>
+        <script type="text/javascript">
+        	alert("Incorrect username or password");
+        </script>
         {{/if}}
 				<form method="POST" action="/">
 					<label for="username">Username:</label>
