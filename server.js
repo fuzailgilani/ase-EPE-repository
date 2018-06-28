@@ -136,11 +136,13 @@ app.post('/', (req,res) => {
     userName: req.body.userName,
     pass: req.body.password
   }
+  if (loginCredentials.userName != "" && loginCredentials.password != "") {
 
-  if (verifyCredentials(loginCredentials)){ // TODO create verifyCredentials method
-    res.redirect(200, '/home')
-  } else {
-    res.redirect('/?errorMessage=Invalid%20login%20credentials') // TODO configure redirect to contain error message that credentials were not verified
+    if (verifyCredentials(loginCredentials)){ // TODO create verifyCredentials method
+       res.redirect(200, '/home')
+    }  else {
+      res.redirect('/?errorMessage=Invalid%20login%20credentials') // TODO configure redirect to contain error message that credentials were not verified
+    }
   }
 });
 
