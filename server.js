@@ -143,6 +143,8 @@ app.post('/', (req,res) => {
     }  else {
       res.redirect('/?errorMessage=Invalid%20login%20credentials') // TODO configure redirect to contain error message that credentials were not verified
     }
+  } else {
+    res.redirect('/');
   }
 });
 
