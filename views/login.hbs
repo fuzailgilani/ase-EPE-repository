@@ -1,35 +1,49 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Some Website</title>
-  </head>
-  <body>
-    <h1>This is a dummy login page. Press the login button to proceed.</h1>
+<head>
+	<title>EPE Login</title>
+	<script type="text/javascript" src="SHA512.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		/* This function will send a request to the node server to verify login when we have full connectivity */
+		function sendData() {
+			//Replace testURL with actual URL when hosted
+			var testURL = "C:\\Users\\hjone\\OneDrive\\Desktop\\Summer18\\Advanced Software\\Code\\index.html";
 
-    <p>For the sake of this sprint, I have created the architecture of the backend, but filled it out with dummy functions.</p><br>
-    <p>Most, if not all, of the required routes for the finished product have been defined. As the summer continues, we will replace the dummy functions with the desired business logic and functionality.</p>
-    <p>For now, each page will display directions for how to test each route.</p>
-    <p>This demo also has a fully functioning database, but this front-end demo does not utilize it.</p><br>
+			var user = sha512(document.getElementById('username').value);
+			var pass = sha512(document.getElementById('password').value);
 
-    <p>The server has hardcoded dummy login credentials. In order to log in succesfully, use the following credentials:</p>
-    <p>Username: employeeX</p>
-    <p>Password: passwordX</p>
-    <p>where X is a number between 1 and 5.</p><br>
-    <p>After a successful login, click the /home link to continue.</p>
+			/*if (user == sha512("hello") && pass == sha512("asdasd")) {
+				window.location.href = testURL;
+			} else {
+				alert("Incorrect username or password");
+			}*/
 
-    {{#if errorMessage}}
-    <p>{{errorMessage}}</p>
-    {{/if}}
+		}
+	</script>
+	<link rel="stylesheet" type="text/css" href="myStyle.css">
 
-    <form action="/" method="post">
-      Username:<br>
-      <input type="text" name="userName">
-      <br>
-      Password:<br>
-      <input type="password" name="password"><br>
-      <input type="submit" value="Log In">
-    </form>
-
-  </body>
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<center><h1 id ="title">EPE Login</h1></center>
+			<center>
+        {{#if errorMessage}}
+        <p>{{errorMessage}}</p>
+        {{/if}}
+				<form method="POST" action="/">
+					<label for="username">Username:</label>
+					<input type="text" name="userName" id="username"></input><br />
+					<label for="password">Password:</label>
+					<input type="password" name="password" id="password"></input><br />
+					<input type="submit" name="submitButton" id="submitButton"></input>
+				</form>
+			</center>
+		</div>
+	</div>
+</body>
 </html>
