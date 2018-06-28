@@ -139,7 +139,7 @@ app.post('/', (req,res) => {
   if (loginCredentials.userName != "" && loginCredentials.password != "") {
 
     if (verifyCredentials(loginCredentials)){ // TODO create verifyCredentials method
-       res.redirect(200, '/home')
+       res.redirect('/home')
     }  else {
       res.redirect('/?errorMessage=Invalid%20login%20credentials') // TODO configure redirect to contain error message that credentials were not verified
     }
