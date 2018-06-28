@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Some Website</title>
-  </head>
-  <body>
-    <h1>This is a dummy home page. Press any of the three buttons to proceed.</h1>
+<head>
+	<title>Main Splash</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">SA EPE</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <p>The home page is our simplest page. We do not expect any changes to the front-end functionality currently provided here.</p>
-    <p>On the server side of things, we will incorproate user authentication as the semester carries on.</p>
-
-    <p>Also, the front-end here will all be replaced by the front-end code that the other group members have worked on. This is all placeholder, even if some of the functionality isn't expected to change.</p>
-
-    <form action="/create" method="get">
-      <input type="submit" value="Create">
-    </form>
-
-    <form action="/approve" method="get">
-      <input type="submit" value="Approve">
-    </form>
-
-    <form action="/archive" method="get">
-      <input type="submit" value="Archive">
-    </form>
-
-  </body>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/approve">Pending Evals <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/pending">Archived Evals <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+  <center>
+    <h1>Welcome to the EPE System</h1>
+    <h3>Please select an option above</h3>
+  </center>
+</body>
 </html>
