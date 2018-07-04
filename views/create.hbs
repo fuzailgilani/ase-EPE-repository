@@ -44,14 +44,15 @@
 
     <form action="/create" method="post">
       Employee:<br>
-      <input type="text" name="employeeName">
+      <input type="text" name="employeeName" required>
       <br>
-      Whatever:<br>
-      <input type="text" name="somethingElse">
-      <br><br>
-      Do you want to this form to be valid or not?:<br>
-      <input type="radio" name="validOrNot" value="validate" checked> Valid<br>
-      <input type="radio" name="validOrNot" value="invalidate"> Invalid<br>
+      SAP Number:<br>
+      <input type="text" name="SAPNumber" required>
+      <br>
+      Form Content:<br>
+      <input type="text" name="formContent" required>
+      <br>
+      <br>
       <input type="submit" value="Submit Form">
     </form>
 

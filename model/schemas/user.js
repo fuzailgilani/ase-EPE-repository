@@ -20,6 +20,10 @@ var User = mongoose.model('User', {
   subordinates: {
     type: Array,
     required: false
+  },
+  superiors: {
+    type: Array,
+    required: false
   }
   // email: {
   //   required: true,

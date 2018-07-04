@@ -15,6 +15,10 @@ const port = process.env.PORT;
 
 // DUMMY FUNCTIONS FOR now
 
+var getCurrentUserSuperiors = () => {
+  return ['64', '234', '653', '123'];
+}
+
 var verifyCredentials = (loginCredentials) => {
   const dummyLoginCredentials = [{
       userName: "employee1",
@@ -42,8 +46,8 @@ var verifyCredentials = (loginCredentials) => {
   return false;
 };
 
-var validateForm = (validForm) => {
-  return validForm === 'validate';
+var validateForm = (formData) => {
+  return (formData.formContent && formData.employeeName && formData.SAPNumber);
 };
 
 var getEPEsFromDB = (mode, user) => {
@@ -67,60 +71,6 @@ var getEPEsFromDB = (mode, user) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
-
-/*
-ROUTES TO DEFINE
-  / routes
-    GET /
-      if request contains error message, display that above login form
-      login form
-    POST /
-      validate login
-      if validated, redirect to home
-      else, send GET / request with error message in request
-
-  /home routes
-    GET /home
-      display buttons for create, approve, archive
-
-  /create routes
-    GET /create
-      displays form for EPE, with any errors if request contains them
-
-    POST /create
-      validates form before entry into database
-        if valid, sends to database
-        else, send to GET /create with error messages in request
-
-  /approve routes // TODO
-    GET /approve/:id
-      check if request contains id of EPEForm
-        if request contains id, fetch form from database and display it
-          below form, have approve button that when clicked, sends PATCH /approve request
-        else do nothing
-
-    GET /approve // TODO
-      query database for all forms requiring approval from current User
-        display list of links in table, with employee name and SAP number
-          link sends GET /approve/:id request with id in request
-
-    POST /approve/:id // TODO
-      fetch EPEForm that corresponds to id in request from database
-        remove current user from approvalFrom array
-        check if approvalFrom array is now empty
-        if empty, set approvalReq to false
-
-  /archive routes // TODO
-    GET /archive/:id
-      check if request contains id of EPEform
-      if request contains id, fetch form from database and display it
-      else do nothing
-
-    GET /archive
-      query database for all forms that are archived
-      display list of links in table, with employee name and SAP number
-        link sends GET /archive/:id request with id in request
-*/
 
 app.get('/', (req,res) => {
   console.log('GET /');
@@ -148,6 +98,20 @@ app.post('/', (req,res) => {
   }
 });
 
+app.get('/success', (req,res) => {
+  console.log('GET /success');
+  var body = _.pick(req.query, ['message']);
+
+  res.render('success.hbs', body);
+});
+
+app.get('/error', (req,res) => {
+    console.log('GET /error');
+  var body = _.pick(req.query, ['message']);
+
+  res.render('error.hbs', body);
+});
+
 app.get('/home', (req,res) => {
   console.log('GET /home');
   console.log(req.query);
@@ -165,10 +129,23 @@ app.get('/create', (req,res) => {
 app.post('/create', (req,res) => {
   console.log('POST /create');
   console.log(req.body);
-  var validForm = req.body.validOrNot;
+  var formData = _.pick(req.body, ['employeeName', 'SAPNumber', 'formContent']);
 
-  if (validateForm(validForm)){ // TODO create formEntries method
-    res.redirect(200, '/home');
+  if (validateForm(formData)){
+    var newEPEForm = new EPEForm({
+      name: formData.employeeName,
+      SAPNumber: formData.SAPNumber,
+      form: {
+        formContent: formData.formContent
+      },
+      approvalFrom: getCurrentUserSuperiors()
+    });
+
+    newEPEForm.save().then((doc) => {
+      res.redirect('/success?message=Form%20created%20successfully');
+    }, (err) => {
+      res.redirect('/error?message=Form%20creation%20unsuccessful');
+    });
   } else {
     res.redirect('/create?errorMessages=Invalid%20form%20data&filledInValues=blah');
   }
@@ -284,3 +261,57 @@ app.listen(port, () => {
 });
 
 module.exports = {app};
+
+/*
+ROUTES TO DEFINE
+  / routes
+    GET /
+      if request contains error message, display that above login form
+      login form
+    POST /
+      validate login
+      if validated, redirect to home
+      else, send GET / request with error message in request
+
+  /home routes
+    GET /home
+      display buttons for create, approve, archive
+
+  /create routes
+    GET /create
+      displays form for EPE, with any errors if request contains them
+
+    POST /create
+      validates form before entry into database
+        if valid, sends to database
+        else, send to GET /create with error messages in request
+
+  /approve routes // TODO
+    GET /approve/:id
+      check if request contains id of EPEForm
+        if request contains id, fetch form from database and display it
+          below form, have approve button that when clicked, sends PATCH /approve request
+        else do nothing
+
+    GET /approve // TODO
+      query database for all forms requiring approval from current User
+        display list of links in table, with employee name and SAP number
+          link sends GET /approve/:id request with id in request
+
+    POST /approve/:id // TODO
+      fetch EPEForm that corresponds to id in request from database
+        remove current user from approvalFrom array
+        check if approvalFrom array is now empty
+        if empty, set approvalReq to false
+
+  /archive routes // TODO
+    GET /archive/:id
+      check if request contains id of EPEform
+      if request contains id, fetch form from database and display it
+      else do nothing
+
+    GET /archive
+      query database for all forms that are archived
+      display list of links in table, with employee name and SAP number
+        link sends GET /archive/:id request with id in request
+*/
