@@ -9,7 +9,7 @@ const hbs = require('hbs');
 var {mongoose} = require('./model/mongoose');
 var {EPEForm} = require('./model/schemas/epeform');
 var {User} = require('./model/schemas/user');
-var {getEPEsFromDB, verifyCredentials} = require('./model/crud');
+var {getEPEsFromDB, verifyCredentials, submitForm} = require('./model/crud');
 
 var app = express();
 const port = process.env.PORT;
@@ -24,36 +24,46 @@ var validateForm = (formData) => {
   return (formData.formContent && formData.employeeName && formData.SAPNumber);
 };
 
+// set up parsing for Express app
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// set up view engine to handlebars for Express app
 app.set('view engine', 'hbs');
 
+// GET / - login page
 app.get('/', (req,res) => {
   console.log('GET /');
+  // if request query contains error message, then include it in body for handlebars
   var body = _.pick(req.query, ['errorMessage']);
 
+  // render login page
   res.render('login.hbs', body);
 });
 
+// POST / - verify login credentials
 app.post('/', (req,res) => {
   console.log('POST /');
   console.log(req.body);
-  var loginCredentials = { // fetch login credentials from request
-    userName: req.body.userName,
-    pass: req.body.password
-  }
-  if (loginCredentials.userName != "" && loginCredentials.password != "") {
 
-    if (verifyCredentials(loginCredentials)){ // TODO create verifyCredentials method
+  // retrieve login credentials from request body using lodash
+  var loginCredentials = _.pick(req.body, ['userName', 'password']);
+
+  // if user typed in username and password into form
+  if (loginCredentials.userName != "" && loginCredentials.password != "") {
+    // verify credentials and redirect appropriately (to GET /home if success, to GET / with error message if not)
+    if (verifyCredentials(loginCredentials)){
        res.redirect('/home')
     }  else {
-      res.redirect('/?errorMessage=Invalid%20login%20credentials') // TODO configure redirect to contain error message that credentials were not verified
+      res.redirect('/?errorMessage=Invalid%20login%20credentials')
     }
+  // if user did not include username or pass, then redirect to GET / without any message
   } else {
     res.redirect('/');
   }
 });
 
+// GET /success - if any operation (creating form, updating form) is a success, redirect here
 app.get('/success', (req,res) => {
   console.log('GET /success');
   var body = _.pick(req.query, ['message']);
@@ -61,6 +71,7 @@ app.get('/success', (req,res) => {
   res.render('success.hbs', body);
 });
 
+// GET /error - if any operation (creating form, updating form) fails, redirect here
 app.get('/error', (req,res) => {
     console.log('GET /error');
   var body = _.pick(req.query, ['message']);
@@ -68,154 +79,129 @@ app.get('/error', (req,res) => {
   res.render('error.hbs', body);
 });
 
+// GET /home - home page with nav bar, displayed after login
 app.get('/home', (req,res) => {
   console.log('GET /home');
   console.log(req.query);
   res.render('home.hbs'); // TODO create home page
 });
 
+// GET /create - display EPE HTML form
 app.get('/create', (req,res) => {
   console.log('GET /create');
   console.log(req.query);
+  // if request query contains error messages and previously filled in values, include in body for handlebars
   var body = _.pick(req.query, ['errorMessages', 'filledInValues']);
 
+  // render form creation page
   res.render('create.hbs', body); //TODO create login html/angular page
 });
 
+// POST /create - validate whether form is ready for database or not
 app.post('/create', (req,res) => {
   console.log('POST /create');
   console.log(req.body);
-  var formData = _.pick(req.body, ['employeeName', 'SAPNumber', 'formContent']);
+  // pick submitted form data using lodash
+  var submittedFormData = _.pick(req.body, ['employeeName', 'SAPNumber', 'formContent']);
 
-  if (validateForm(formData)){
-    var newEPEForm = new EPEForm({
-      name: formData.employeeName,
-      SAPNumber: formData.SAPNumber,
+  // if form is valid, then take steps to submit it to database
+  if (validateForm(submittedFormData)){
+    // first, add approvalFrom array (should not be submitted by user)
+    formData = {
+      name: submittedFormData.employeeName,
+      SAPNumber: submittedFormData.SAPNumber,
       form: {
-        formContent: formData.formContent
+        formContent: submittedFormData.formContent
       },
       approvalFrom: getCurrentUserSuperiors()
-    });
+    }
 
-    newEPEForm.save().then((doc) => {
+    // then submit form using submitForm function from crud.js - TODO error handling
+    submitForm(formData).then((doc) => {
       res.redirect('/success?message=Form%20created%20successfully');
-    }, (err) => {
-      res.redirect('/error?message=Form%20creation%20unsuccessful');
     });
+  // if form is invalidly submitted, redirect with error messages to GET /create
   } else {
     res.redirect('/create?errorMessages=Invalid%20form%20data&filledInValues=blah');
   }
 });
 
+// GET /approve - display list of forms still requiring approval
 app.get('/approve', (req,res) => {
   console.log('GET /approve');
   console.log(req.query);
+  // dummy username for now - authentication will be added later
   var userName = 'foobar';
+  // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
   getEPEsFromDB('approve', userName).then((arrayOfForms) => {
+    // render approve page with array of forms to be displayed in list
     res.render('approve.hbs', {arrayOfForms});
   });
 });
 
+// GET /approve/:id - display form specified by id above list of other forms requiring approval
 app.get('/approve/:id', (req,res) => {
   console.log('GET /approve/:id');
   console.log(req.body);
-  var userName = 'foobar';
-  var arrayOfFormIds = getEPEsFromDB('approve', userName);
 
+  // dummy username for now - authentication will be added later
+  var userName = 'foobar';
+
+  // id is simply fetched from request for now - TODO fetch actual from database
   var id = req.params.id;
 
-  res.render('approve.hbs', {arrayOfFormIds, id});
-
-  // if (!ObjectID.isValid(id)) {
-  //   return res.status(404).render('404.html');
-  // }
-  //
-  // EPEForm.findById(id).then((todo) => {
-  //   if (!todo){
-  //     return res.status(404).render('404.html');
-  //   }
-  //
-  //   res.render('approve.html', {todo});
-  // }).catch((err) => {
-  //   res.status(400).render('error.html');
-  // });
+  // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
+  getEPEsFromDB('approve', userName).then((arrayOfForms) => {
+    // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
+    res.render('approve.hbs', {arrayOfForms, id});
+  });
 });
 
+// GET /archive - display list of archived forms that no longer require approval
 app.get('/archive', (req,res) => {
   console.log('GET /archive');
   console.log(req.query);
+
+  // dummy username for now - authentication will be added later
   var userName = 'foobar';
+
+  // fetch array of archived EPE forms from database using crud.js - TODO error handling
   getEPEsFromDB('archive', userName).then((arrayOfForms) => {
+    // render archive page with array of forms to be displayed in list
     res.render('archive.hbs', {arrayOfForms});
   });
 });
 
+// GET /archive/:id - display form specified by id above list of other archived forms
 app.get('/archive/:id', (req,res) => {
   console.log('GET /archive/:id');
   console.log(req.body);
-  var userName = 'foobar';
-  var arrayOfFormIds = getEPEsFromDB('approve', userName);
 
+  // dummy username for now - authentication will be added later
+  var userName = 'foobar';
+
+  // id is simply fetched from request for now - TODO fetch actual from database
   var id = req.params.id;
 
-  res.render('archive.hbs', {arrayOfFormIds, id});
-
-  // if (!ObjectID.isValid(id)) {
-  //   return res.status(404).render('404.html');
-  // }
-  //
-  // EPEForm.findById(id).then((todo) => {
-  //   if (!todo){
-  //     return res.status(404).render('404.html');
-  //   }
-  //
-  //   res.render('approve.html', {todo});
-  // }).catch((err) => {
-  //   res.status(400).render('error.html');
-  // });
+  // fetch array of archived EPE forms from database using crud.js - TODO error handling
+  getEPEsFromDB('archive', userName).then((arrayOfForms) => {
+    // render archive page with array of forms to be displayed in list, and id for specific form that was clicked
+    res.render('archive.hbs', {arrayOfForms, id});
+  });
 });
 
+// PATCH /approve/:id - update form that has been approved by user - TODO
 // app.patch('/approve/:id', (req,res) => {
 //   var id = req.params.id;
 //   var user = 'foobar';
-//
-//   if (!ObjectID.isValid(id)) {
-//     return res.status(404).render('404.html');
-//   }
-//
-//   EPEForm.findById(id).then((epeForm) => { // TODO finish this method
-//     if (!epeForm){
-//       return res.status(404).render('404.html');
-//     }
-//
-//     if(epeForm.approvalFrom.includes(user)){
-//       newApprovalFrom = epeForm.approvalFrom.remove(user);
-//       var body = {
-//         approvalFrom = newApprovalFrom,
-//         approvalReq = newApprovalFrom.length < 1
-//       };
-//
-//       EPEForm.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newEpe) => {
-//         if(!newEpe){
-//           return res.status(400).render('error.html');
-//         }
-//
-//         res.send({newEpe}); // TODO redirect to GET /approve
-//       }).catch((err) => {
-//         res.status(400).render('error.html', err);
-//       })
-//     } else {
-//       throw new Error('You are not required to approve this form');
-//     }
-//   }).catch((err) => {
-//     res.status(400).render('error.html', err);
-//   });
 // });
 
+// set up Express app to listen on specified port
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
 });
 
+// export Express app object for use in tests - currently no tests set up
 module.exports = {app};
 
 /*
