@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var EPEForm = mongoose.model('EPEForms', {
+var EPEFormSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -18,11 +18,12 @@ var EPEForm = mongoose.model('EPEForms', {
     required: true,
     default: true
   },
-  approvalFrom: {
-    type: Array,
-    required: false,
-    default: []
-  }
+  approvalFrom: [{
+    type: String,
+    required: false
+  }]
 });
+
+var EPEForm = mongoose.model('EPEForm', EPEFormSchema);
 
 module.exports = {EPEForm};

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var User = mongoose.model('User', {
+var UserSchema = new mongoose.Schema({
   SAPNumber: {
     type: String,
     required: true
@@ -32,5 +32,7 @@ var User = mongoose.model('User', {
   //   minlength: 1
   // }
 });
+
+var User = mongoose.model('User', UserSchema);
 
 module.exports = {User};

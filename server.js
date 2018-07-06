@@ -9,6 +9,7 @@ const hbs = require('hbs');
 var {mongoose} = require('./model/mongoose');
 var {EPEForm} = require('./model/schemas/epeform');
 var {User} = require('./model/schemas/user');
+var {getEPEsFromDB, verifyCredentials} = require('./model/crud');
 
 var app = express();
 const port = process.env.PORT;
@@ -19,53 +20,8 @@ var getCurrentUserSuperiors = () => {
   return ['64', '234', '653', '123'];
 }
 
-var verifyCredentials = (loginCredentials) => {
-  const dummyLoginCredentials = [{
-      userName: "employee1",
-      pass: "password1"
-    },{
-      userName: "employee2",
-      pass: "password2"
-    },{
-      userName: "employee3",
-      password: "password3"
-    },{
-      userName: "employee4",
-      pass: "password4"
-    },{
-      userName: "employee5",
-      pass: "password5"
-    }
-  ];
-  var i;
-  for(i = 0; i < dummyLoginCredentials.length; i++){
-    if(dummyLoginCredentials[i].userName === loginCredentials.userName && dummyLoginCredentials[i].pass === loginCredentials.pass){
-      return true;
-    }
-  }
-  return false;
-};
-
 var validateForm = (formData) => {
   return (formData.formContent && formData.employeeName && formData.SAPNumber);
-};
-
-var getEPEsFromDB = (mode, user) => {
-  var name;
-  if (mode === 'approve'){
-    name = 'Bob';
-  } else if (mode === 'archive'){
-    name = 'Bill'
-  }
-  var dummyArray = [];
-  while (dummyArray.length !== 5){
-    dummyArray.push({
-      id: new ObjectID().toHexString(),
-      name: `${name} # ${dummyArray.length+1}`,
-      SAPNum: Math.round(Math.random() * 100)
-    });
-  }
-  return dummyArray;
 };
 
 app.use(bodyParser.json());
@@ -155,9 +111,9 @@ app.get('/approve', (req,res) => {
   console.log('GET /approve');
   console.log(req.query);
   var userName = 'foobar';
-  var arrayOfFormIds = getEPEsFromDB('approve', userName);
-
-  res.render('approve.hbs', {arrayOfFormIds});
+  getEPEsFromDB('approve', userName).then((arrayOfForms) => {
+    res.render('approve.hbs', {arrayOfForms});
+  });
 });
 
 app.get('/approve/:id', (req,res) => {
@@ -189,9 +145,9 @@ app.get('/archive', (req,res) => {
   console.log('GET /archive');
   console.log(req.query);
   var userName = 'foobar';
-  var arrayOfFormIds = getEPEsFromDB('archive');
-
-  res.render('archive.hbs', {arrayOfFormIds});
+  getEPEsFromDB('archive', userName).then((arrayOfForms) => {
+    res.render('archive.hbs', {arrayOfForms});
+  });
 });
 
 app.get('/archive/:id', (req,res) => {

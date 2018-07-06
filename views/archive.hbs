@@ -48,36 +48,14 @@
         <th>Form ID</th>
         <th>Link</th>
       </tr>
+      {{#each arrayOfForms}}
       <tr>
-        <td>{{arrayOfFormIds.[0].SAPNum}}</td>
-        <td>{{arrayOfFormIds.[0].name}}</td>
-        <td>{{arrayOfFormIds.[0].id}}</td>
-        <td><a href="/archive/{{arrayOfFormIds.[0].id}}">Link to Form</a></td>
+        <td>{{this.SAPNumber}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this._id}}</td>
+        <td><a href="/approve/{{this._id}}">Link to Form</a></td>
       </tr>
-      <tr>
-        <td>{{arrayOfFormIds.[1].SAPNum}}</td>
-        <td>{{arrayOfFormIds.[1].name}}</td>
-        <td>{{arrayOfFormIds.[1].id}}</td>
-        <td><a href="/archive/{{arrayOfFormIds.[1].id}}">Link to Form</a></td>
-      </tr>
-      <tr>
-        <td>{{arrayOfFormIds.[2].SAPNum}}</td>
-        <td>{{arrayOfFormIds.[2].name}}</td>
-        <td>{{arrayOfFormIds.[2].id}}</td>
-        <td><a href="/archive/{{arrayOfFormIds.[2].id}}">Link to Form</a></td>
-      </tr>
-      <tr>
-        <td>{{arrayOfFormIds.[3].SAPNum}}</td>
-        <td>{{arrayOfFormIds.[3].name}}</td>
-        <td>{{arrayOfFormIds.[3].id}}</td>
-        <td><a href="/archive/{{arrayOfFormIds.[3].id}}">Link to Form</a></td>
-      </tr>
-      <tr>
-        <td>{{arrayOfFormIds.[4].SAPNum}}</td>
-        <td>{{arrayOfFormIds.[4].name}}</td>
-        <td>{{arrayOfFormIds.[4].id}}</td>
-        <td><a href="/archive/{{arrayOfFormIds.[4].id}}">Link to Form</a></td>
-      </tr>
+      {{/each}}
     </table>
 
     <form action="/home" method="get">
