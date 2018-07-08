@@ -9,7 +9,7 @@ const hbs = require('hbs');
 var {mongoose} = require('./model/mongoose');
 var {EPEForm} = require('./model/schemas/epeform');
 var {User} = require('./model/schemas/user');
-var {getEPEsFromDB, verifyCredentials, submitForm} = require('./model/crud');
+var {getEPEsFromDB, verifyCredentials, submitForm, getEPEById, approveEPE} = require('./model/crud');
 
 var app = express();
 const port = process.env.PORT;
@@ -142,22 +142,25 @@ app.get('/approve', (req,res) => {
 // GET /approve/:id - display form specified by id above list of other forms requiring approval
 app.get('/approve/:id', (req,res) => {
   console.log('GET /approve/:id');
-  console.log(req.body);
+  console.log(req.query);
 
   // dummy username for now - authentication will be added later
   var userName = 'foobar';
 
-  // id is simply fetched from request for now - TODO fetch actual from database
+  // id is fetched from request
   var id = req.params.id;
 
-  // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
-  getEPEsFromDB('approve', userName).then((arrayOfForms) => {
-    // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
-    res.render('approve.hbs', {arrayOfForms, id});
+  // fetch the EPE data from database using ID - TODO error handling
+  getEPEById(id).then((epeForm) => {
+    // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
+    getEPEsFromDB('approve', userName).then((arrayOfForms) => {
+      // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
+      res.render('approve.hbs', {arrayOfForms, id, epeForm});
+    });
   });
 });
 
-// GET /archive - display list of archived forms that no longer require approval
+// GET /archive - display list of archived formsget that no longer require approval
 app.get('/archive', (req,res) => {
   console.log('GET /archive');
   console.log(req.query);
@@ -175,26 +178,42 @@ app.get('/archive', (req,res) => {
 // GET /archive/:id - display form specified by id above list of other archived forms
 app.get('/archive/:id', (req,res) => {
   console.log('GET /archive/:id');
-  console.log(req.body);
+  console.log(req.query);
 
   // dummy username for now - authentication will be added later
   var userName = 'foobar';
 
-  // id is simply fetched from request for now - TODO fetch actual from database
+  // id is fetched from request
   var id = req.params.id;
 
-  // fetch array of archived EPE forms from database using crud.js - TODO error handling
-  getEPEsFromDB('archive', userName).then((arrayOfForms) => {
-    // render archive page with array of forms to be displayed in list, and id for specific form that was clicked
-    res.render('archive.hbs', {arrayOfForms, id});
+  // fetch the EPE data from database using ID - TODO error handling
+  getEPEById(id).then((epeForm) => {
+    // fetch array of archived EPE forms from database using crud.js - TODO error handling
+    getEPEsFromDB('archive', userName).then((arrayOfForms) => {
+      var archivedOn = new Date(epeForm.archivedOn).toDateString();
+      // render archive page with array of forms to be displayed in list, and id for specific form that was clicked
+      res.render('archive.hbs', {arrayOfForms, id, epeForm, archivedOn});
+    });
   });
 });
 
-// PATCH /approve/:id - update form that has been approved by user - TODO
-// app.patch('/approve/:id', (req,res) => {
-//   var id = req.params.id;
-//   var user = 'foobar';
-// });
+// POST /approve/:id - update form that has been approved by user
+app.post('/approve/:id', (req,res) => {
+  console.log('PATCH /patch/:id');
+  // pick id from request parameters
+  var id = req.params.id;
+  // pick SAP number of user who approved form from request body
+  var body = _.pick(req.body, ['approvedBy']);
+
+  // dummy username for now - authentication will be added later
+  var user = 'foobar';
+
+  // update id using utility function in crud.js - TODO error handling
+  approveEPE(id, body.approvedBy).then((newEpeForm) => {
+    // on success, redirect to success page with message indicating which form was approved by which user
+    res.redirect(`/success?message=Form%20${newEpeForm._id.toHexString()}%20approved%20by%20SAP%20number%20${body.approvedBy}`);
+  });
+});
 
 // set up Express app to listen on specified port
 app.listen(port, () => {

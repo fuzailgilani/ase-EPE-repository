@@ -21,7 +21,12 @@ var EPEFormSchema = new mongoose.Schema({
   approvalFrom: [{
     type: String,
     required: false
-  }]
+  }],
+  archivedOn:{
+    type: Number,
+    required: false,
+    default: null
+  }
 });
 
 var EPEForm = mongoose.model('EPEForm', EPEFormSchema);

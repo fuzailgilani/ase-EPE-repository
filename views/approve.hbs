@@ -41,6 +41,23 @@
     {{#if id}}
     <p>You clicked the link for the form with id: {{id}}</p>
     {{/if}}
+
+    {{#if epeForm}}
+    <p><b>Name:</b> {{epeForm.name}}</p>
+    <p><b>SAP:</b> {{epeForm.SAPNumber}}</p>
+    <p><b>Form Content:</b> {{epeForm.form.formContent}}</p>
+    <p><b>Approval Required From (SAP Numbers):</b></p>
+    <p>{{#each epeForm.approvalFrom}}{{this}} {{/each}}</p>
+
+    <form action="/approve/{{id}}" method="post">
+      SAP Number to approve form from:<br>
+      <input type="text" name="approvedBy">
+      <br>
+      <input type="submit" value="Approve">
+    </form>
+    <br>
+    {{/if}}
+
     <table>
       <tr>
         <th>SAP Number</th>

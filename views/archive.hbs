@@ -41,6 +41,14 @@
     {{#if id}}
     <p>You clicked the link for the form with id: {{id}}</p>
     {{/if}}
+
+    {{#if epeForm}}
+    <p><b>Name:</b> {{epeForm.name}}</p>
+    <p><b>SAP:</b> {{epeForm.SAPNumber}}</p>
+    <p><b>Form Content:</b> {{epeForm.form.formContent}}</p>
+    <p><b>Archived on:</b> {{archivedOn}}</p>
+    {{/if}}
+
     <table>
       <tr>
         <th>SAP Number</th>
@@ -53,7 +61,7 @@
         <td>{{this.SAPNumber}}</td>
         <td>{{this.name}}</td>
         <td>{{this._id}}</td>
-        <td><a href="/approve/{{this._id}}">Link to Form</a></td>
+        <td><a href="/archive/{{this._id}}">Link to Form</a></td>
       </tr>
       {{/each}}
     </table>
