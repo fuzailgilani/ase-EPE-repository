@@ -21,7 +21,7 @@ var getCurrentUserSuperiors = () => {
 }
 
 var validateForm = (formData) => {
-  return (formData.formContent && formData.employeeName && formData.SAPNumber);
+  return (formData.empTitle && formData.employeeName && formData.SAPNumber);
 };
 
 // set up parsing for Express app
@@ -102,7 +102,7 @@ app.post('/create', (req,res) => {
   console.log('POST /create');
   console.log(req.body);
   // pick submitted form data using lodash
-  var submittedFormData = _.pick(req.body, ['employeeName', 'SAPNumber', 'formContent']);
+  var submittedFormData = _.pick(req.body, ['employeeName', 'SAPNumber', 'empTitle']);
 
   // if form is valid, then take steps to submit it to database
   if (validateForm(submittedFormData)){
@@ -111,7 +111,10 @@ app.post('/create', (req,res) => {
       name: submittedFormData.employeeName,
       SAPNumber: submittedFormData.SAPNumber,
       form: {
-        formContent: submittedFormData.formContent
+        empTitle: submittedFormData.empTitle,
+        department: submittedFormData.department,
+        division: submittedFormData.division,
+        reportingPeriod: submittedFormData.reportingPeriod
       },
       approvalFrom: getCurrentUserSuperiors()
     }
