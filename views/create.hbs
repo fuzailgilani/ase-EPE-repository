@@ -11,50 +11,121 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/home">SA EPE</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+      <a class="navbar-brand" href="/home">SA EPE</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/approve">Pending Evals <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
-      </li>
-    </ul>
-    <span class="navbar-text">
-      <a href="/">Logout</a>
-    </span>
-  </div>
-</nav>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/approve">Pending Evals <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <a href="/">Logout</a>
+        </span>
+      </div>
+    </nav>
+    <div class="container">
+      <center>
+        <h1>Employee Performance Evaluation</h1>
+        <h2>Create new evaluation</h2>
+      </center>
+    <!--
     <h1>This is a dummy create page. Submit the form to proceed.</h1>
 
     <p>You can select whether you want the form to be considered "valid" or not. Validating forms is functionality that I will add to the server in a later sprint.</p>
     <p>We will need to add in the functionality for form validation as the semester carries on.</p>
-
-    {{#if errorMessages}}
-    <p>{{errorMessages}}</p>
-    {{/if}}
-
-    <form action="/create" method="post">
-      Employee:<br>
-      <input type="text" name="employeeName" required>
-      <br>
-      SAP Number:<br>
-      <input type="text" name="SAPNumber" required>
-      <br>
-      Form Content:<br>
-      <input type="text" name="formContent" required>
-      <br>
-      <br>
-      <input type="submit" value="Submit Form">
-    </form>
-
+    -->
+      {{#if errorMessages}}
+      <p>{{errorMessages}}</p>
+      {{/if}}
+      <div class="jumbotron">
+        <center><h3>Employee Information</h3></center><br />
+        <form action="/create" method="post">
+          <div class="form-row">
+            <div class="col-5">
+              <!--Used only for spacing for dropdown 
+                decrease value to move left, increase 
+                to move right
+              -->
+            </div>
+            <div class="col-3">
+              <select name="reviewType">
+                <option value="null">Review Type</option>
+                <option value="planning">Planning</option>
+                <option value="annual">Annual</option>
+              </select>
+            </div>
+          </div>
+          <br />
+          <div class="form-row">
+            <div class="col-6">
+              <input type="text" name="employeeName" class="form-control" placeholder="Employee Name">
+            </div>
+            <div class="col-3">
+              <input type="text" name="SAPNumber" class="form-control" placeholder="SAP Number">
+            </div>
+            <div class="col-3">
+              <input type="text" name="empTitle" class="form-control" placeholder="Title">
+            </div>
+          </div>
+          <br />
+          <div class="form-row">
+            <div class="col">
+              <input type="text" name="department" class="form-control" placeholder="Department">
+            </div>
+            <div class="col">
+              <input type="text" name="division" class="form-control" placeholder="Division">
+            </div>
+            <div class="col">
+              <input type="text" name="reportingPeriod" class="form-control" placeholder="Reporting Period">
+            </div>
+          </div>
+        </form>
+      </div>
+      <br /><br /><br />
+      <h1><center>Rating Descriptions</center></h1>
+      <div class="jumbotron">
+        <div class="row">
+          <div class="col">
+            <h3>1-Improvement Needed</h3>
+            <p>Does not meet the requirements of the job, task, or project. Improvement is needed</p>
+          </div>
+          <div class="col">
+            <h3>2-Achieves Expectations</h3>
+            <p>Successfully meets the requirements of the job, task, or project. Performance consistently meets standards</p>  
+          </div>
+          <div class="col">
+            <h3>3-Exceeds Expectations</h3>
+            <p>Exceeds the performance of the job, task, or project. Performance is characterized by consistent high achievement</p>
+          </div>
+          <div class="col">
+            <h3>4-Outstanding</h3>
+            <p>Far exceeds the requirements of the job, task, or project. Performance consistently shows outstanding achievement far above expectations.</p>
+          </div>
+        </div>
+      </div>
+      <br /><br />
+      <center>
+        <h1>Section 1: Responsibilites, Goals, and Measures</h1>
+        <p>70% of overall rating; evaluation weight assigned</p>
+        <button type="button" class="btn btn-primary">Add</button>
+      </center>
+      <div class="jumbotron">
+        <center>
+          <form>
+            
+          </form>
+        </center>
+      </div>
+    </div><!-- container div close, everything should be before this -->
   </body>
 </html>
