@@ -130,7 +130,7 @@ app.post('/create', (req,res) => {
     });
   // if form is invalidly submitted, redirect with error messages to GET /create
   } else {
-    res.redirect('/create?errorMessages=Invalid%20SAP%20Length');
+    res.redirect('/create?errorMessages=%22Invalid%20SAP%20Length%22');
   }
 });
 
