@@ -102,6 +102,14 @@ app.get('/create', (req,res) => {
   res.render('create.hbs', body); //TODO create login html/angular page
 });
 
+app.get('/addgoals', (req,res) => {
+  console.log('GET /addgoals');
+  console.log(req.query);
+
+  res.render('getgoals.hbs');
+
+});
+
 // POST /create - validate whether form is ready for database or not
 app.post('/create', (req,res) => {
   console.log('POST /create');
