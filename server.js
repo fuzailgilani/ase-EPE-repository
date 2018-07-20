@@ -102,7 +102,7 @@ app.post('/create', (req,res) => {
   console.log('POST /create');
   console.log(req.body);
   // pick submitted form data using lodash
-  var submittedFormData = _.pick(req.body, ['employeeName', 'SAPNumber', 'empTitle']);
+  var submittedFormData = _.pick(req.body, ['employeeName', 'SAPNumber', 'empTitle', 'department', 'division', 'reportingPeriod']);
 
   // if form is valid, then take steps to submit it to database
   if (validateForm(submittedFormData)){
