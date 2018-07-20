@@ -21,7 +21,12 @@ var getCurrentUserSuperiors = () => {
 }
 
 var validateForm = (formData) => {
-  return (formData.empTitle && formData.employeeName && formData.SAPNumber);
+  //Only validating the length of the SAP number, should be 6 characters
+  if (formData.SAPNumber.length == 6) {
+    return true;
+  }
+  return false;
+  //return (formData.empTitle && formData.employeeName && formData.SAPNumber);
 };
 
 // set up parsing for Express app
@@ -121,11 +126,11 @@ app.post('/create', (req,res) => {
 
     // then submit form using submitForm function from crud.js - TODO error handling
     submitForm(formData).then((doc) => {
-      res.redirect('/success?message=Form%20created%20successfully');
+      res.redirect('/addgoals');
     });
   // if form is invalidly submitted, redirect with error messages to GET /create
   } else {
-    res.redirect('/create?errorMessages=Invalid%20form%20data&filledInValues=blah');
+    res.redirect('/create?errorMessages=Invalid%20SAP%20Length');
   }
 });
 
