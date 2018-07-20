@@ -45,7 +45,9 @@
     <p>We will need to add in the functionality for form validation as the semester carries on.</p>
     -->
       {{#if errorMessages}}
-      console.log({{errorMessages}});
+      <script>
+        alert({{errorMessages}});
+      </script>
       {{/if}}
       <div class="jumbotron">
         <center><h3>Employee Information</h3></center><br />
