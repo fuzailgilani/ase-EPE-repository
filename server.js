@@ -106,7 +106,7 @@ app.get('/addgoals', (req,res) => {
   console.log('GET /addgoals');
   console.log(req.query);
 
-  res.render('getgoals.hbs');
+  res.render('addgoals.hbs');
 
 });
 
