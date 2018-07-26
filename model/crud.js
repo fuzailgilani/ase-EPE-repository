@@ -135,7 +135,7 @@ var verifyCredentials = (loginCredentials) => {
   */
   //Begin dummy code
   var username = loginCredentials.userName;
-  var password = loginCredentials.pass;
+  var password = loginCredentials.password;
   console.log("Username");
   console.log(username);
   console.log("Password");
