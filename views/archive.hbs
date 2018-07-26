@@ -8,6 +8,73 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+      function changePage() {
+        var htmlString = "<div class=\"container\">   \
+      <div class=\"jumbotron\"> \
+        <div class=\"form-row\">  \
+          <div class='col-1'></div> \
+          <div class='col-10'> \
+            <center> \
+              <h1>Jack Sparrow</h1> \
+              <h3>Overall Rating: 2</h3> \
+            </center> \
+          </div> \
+          <div class='col-1'></div> \
+        </div> \
+        <div class=\"form-row\"> \
+          <div class=\"col-4\"> \
+            <center> \
+              Number of 1's: \
+              1 \
+            </center> \
+          </div> \
+          <div class=\"col-4\"> \
+            <center> \
+              Number of 2's:  \
+              0 \
+            </center> \
+          </div> \
+          <div class=\"col-4\"> \
+            <center> \
+              Number of 3's:  \
+              1 \
+            </center> \
+          </div> \
+        </div> \
+      </div> \
+      <br /><br /> \
+      <center><h3>Explanation of Ratings:</h3></center> \
+      <div class=\"jumbotron\"> \
+        <center><h1>1</h1></center> \
+        <ul> \
+          <li>Goal: Be a pirate</li> \
+          <li>Feedback: Worst pirate I've ever heard of</li> \
+        </ul> \
+      </div> \
+      <div class=\"jumbotron\"> \
+        <center><h1>2</h1></center> \
+      </div> \
+      <div class=\"jumbotron\"> \
+        <center><h1>3</h1></center> \
+        <ul> \
+          <li>Goal: Be heard of</li> \
+          <li>Feedback</li> \
+          <li>Employee response: But you have heard of me</li> \
+        </ul> \
+      </div> \
+         \
+       \
+    </div>";
+    if (document.getElementById("user").value == "Jack Sparrow") {
+      document.getElementById("changespot").innerHTML = htmlString;
+      }
+      else {
+        document.getElementById("changespot").innerHTML = "<h1><center>User not found!</center></h1>";
+      }
+    }
+    </script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -33,6 +100,7 @@
     </span>
   </div>
 </nav>
+<!--
     <h1>This is a dummy archive page. Press the home button or a link.</h1>
 
     <p>The dummy functions on the server end are generating MongoDB ids rather than fetching them from the database.</p>
@@ -69,6 +137,13 @@
     <form action="/home" method="get">
       <input type="submit" value="Home">
     </form>
-
+-->
+    <center>
+      <form action="javascript:changePage()">
+          <input type="text" name="user" id="user">
+          <input type="submit" name="">
+      </form>
+    </center><br /><br />
+    <div id="changespot"></div>
   </body>
 </html>
