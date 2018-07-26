@@ -106,6 +106,8 @@ var approveEPE = (id, approvedBy) => {
 
 // utility function to verify login credentials; dummy function for now - TODO incorporate authentication
 var verifyCredentials = (loginCredentials) => {
+  /* Commenting out to dummy for presentation, change back when production pushed
+
   const dummyLoginCredentials = [{
       userName: "employee1",
       pass: "password1"
@@ -130,6 +132,20 @@ var verifyCredentials = (loginCredentials) => {
     }
   }
   return false;
+  */
+  //Begin dummy code
+  var username = loginCredentials.userName;
+  var password = loginCredentials.pass;
+  if (username == "employee1" && password == "password1") {
+    return 1;
+  }
+  else if (username == "employee2" && password == "password2") {
+    return 2;
+  }
+  else {
+    return 0;
+  }
+  //End dummy code
 };
 
 // export crud functions for use in server.js

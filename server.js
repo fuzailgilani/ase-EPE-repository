@@ -57,15 +57,28 @@ app.post('/', (req,res) => {
   // if user typed in username and password into form
   if (loginCredentials.userName != "" && loginCredentials.password != "") {
     // verify credentials and redirect appropriately (to GET /home if success, to GET / with error message if not)
+    /* Commenting out to dummy for presentation
     if (verifyCredentials(loginCredentials)){
        res.redirect('/home')
     }  else {
       res.redirect('/?errorMessage=Invalid%20login%20credentials')
     }
+    */
+    //Begin dummy code
+    var successCode = verifyCredentials(loginCredentials);
+    if (successCode == 1) {
+      res.redirect('/home');
+    } else if (successCode == 2) {
+      res.redirect('/emphome');
+    }
+    else {
+      res.redirect('/?errorMessage=Invalid%20login%20credentials');
+    }
   // if user did not include username or pass, then redirect to GET / without any message
   } else {
     res.redirect('/');
   }
+  //End dummy code
 });
 
 // GET /success - if any operation (creating form, updating form) is a success, redirect here
@@ -109,6 +122,29 @@ app.get('/addgoals', (req,res) => {
   res.render('addgoals.hbs');
 
 });
+
+//BEGIN dummy code
+app.get('/approveemp', (req,res) => {
+  console.log('GET /approveemp');
+  console.log(req.query);
+
+  res.render('approveemp.hbs');
+});
+
+app.get('/emphome', (req,res) => {
+  console.log('GET /emphome');
+  console.log(req.query);
+
+  res.render('emphome');
+});
+
+app.get('/archiveemp', (req,res) => {
+  console.log('GET /archiveemp');
+  console.log(req.query);
+
+  res.render('archiveemp');
+});
+//END dummy code
 
 // POST /create - validate whether form is ready for database or not
 app.post('/create', (req,res) => {
