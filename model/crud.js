@@ -136,6 +136,8 @@ var verifyCredentials = (loginCredentials) => {
   //Begin dummy code
   var username = loginCredentials.userName;
   var password = loginCredentials.pass;
+  console.log('userName = ' + username + '\n' + 
+              'password = ' + password = '\n');
   if (username == "employee1" && password == "password1") {
     return 1;
   }
