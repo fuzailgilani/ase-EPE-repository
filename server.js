@@ -66,8 +66,6 @@ app.post('/', (req,res) => {
     */
     //Begin dummy code
     var successCode = verifyCredentials(loginCredentials);
-    console.log("Success Code");
-    console.log(successCode);
     if (successCode == 1) {
       res.redirect('/home');
     } else if (successCode == 2) {
