@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pending Approval</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script>
+          jQuery(document).ready(function($) {
+          $(".row-click").click(function() {
+              window.location = $(this).data("href");
+          });
+      });
+      </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/home">SA EPE</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+    <span class="navbar-text">
+      <a href="/">Logout</a>
+    </span>
+  </div>
+</nav>
+    {{#if id}}
+        <div style="margin-top: 20px;">
+    <h1 align="center">Form: {{id}}</h1>
+        </div>
+    {{/if}}
+    <div  style="margin-left:30px;margin-right:50%; margin-top: 40px;">
+    {{#if epeForm}}
+        <table class="table table-bordered table-light">
+            <tbody>
+            <tr><td><b>Name:</b></td> <td>{{epeForm.name}}</td></tr>
+            <tr><td><b>SAP:</b></td> <td>{{epeForm.SAPNumber}}</td></tr>
+            <tr><td><b>Form Content:</b></td> <td>{{epeForm.form.formContent}}</td></tr>
+    <tr><td><b>Approval Required From (SAP Numbers):</b></td>
+        <td>
+        {{#each epeForm.approvalFrom}}{{this}}, {{/each}}
+            </tr></tbody>
+    </table>
+    </td></tr>
+            </tbody>
+        </table>
+    <form action="/approve/{{id}}" method="post">
+      SAP Number to approve form from:<br>
+        <div style="margin-bottom: 10px;">
+      <input type="text" name="approvedBy" placeholder="SAP Number">
+        </div>
+      <input type="submit" value="Approve">
+    </form>
+    <br>
+        </div>
+        <h1 align="center">Other Pending EPE Forms</h1>
+        <div  style="margin-left:30px;margin-right:400px; margin-top: 40px;">
+    {{else}}
+        <h1 align="center">Pending EPE Forms</h1>
+
+    {{/if}}
+        <div style="margin-top: 40px;">
+    <table class="table table-hover table-sm table-bordered table-light">
+        <thead class="thead">
+        <th>SAP Number</th>
+        <th>Employee Name</th>
+        <th>Form ID</th>
+      </thead>
+        <tbody>
+      {{#each arrayOfForms}}
+      <tr class="row-click" data-href="/approve/{{this._id}}">
+        <td>{{this.SAPNumber}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this._id}}</td>
+      </tr>
+      {{/each}}
+        </tbody>
+
+    </table>
+        </div>
+</div>
+    <div style="margin-left: 30px;margin-top: 20px;margin-bottom: 20px;">
+    <form action="/home" method="get">
+      <input type="submit" value="Home">
+    </form>
+    </div>
+  </body>
+</html>
