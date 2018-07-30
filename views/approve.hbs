@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Pending Approval</title>
     <link rel="shortcut icon" href="/favicon.ico">
@@ -8,76 +8,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/home">SA EPE</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <script>
+        jQuery(document).ready(function($) {
+            $(".row-click").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">SA EPE</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
-      </li>
-    </ul>
-    <span class="navbar-text">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <span class="navbar-text">
       <a href="/">Logout</a>
     </span>
-  </div>
+    </div>
 </nav>
-    <h1>This is a dummy approve page. Press the home button or a link.</h1>
+{{#if id}}
+    <div style="margin-top: 20px;">
+        <h1 align="center">Form: {{id}}</h1>
+    </div>
+{{/if}}
+<div  style="margin-left:30px;margin-right:50%; margin-top: 40px;">
+{{#if epeForm}}
+        <table class="table table-bordered table-light">
+            <tbody>
+            <tr><td><b>Name:</b></td> <td>{{epeForm.name}}</td></tr>
+            <tr><td><b>SAP:</b></td> <td>{{epeForm.SAPNumber}}</td></tr>
+            <tr><td><b>Form Content:</b></td> <td>{{epeForm.form.formContent}}</td></tr>
+            <tr><td><b>Approval Required From (SAP Numbers):</b></td>
+                <td>
+                    {{#each epeForm.approvalFrom}}{{this}}, {{/each}}
+            </tr></tbody>
+        </table>
+        </td></tr>
+        </tbody>
+        </table>
+        <form action="/approve/{{id}}" method="post">
+            SAP Number to approve form from:<br>
+            <div style="margin-bottom: 10px;">
+                <input type="text" name="approvedBy" placeholder="SAP Number">
+            </div>
+            <input type="submit" value="Approve">
+        </form>
+        <br>
+    </div>
+    <h1 align="center">Other Pending EPE Forms</h1>
+    <div  style="margin-left:30px;margin-right:400px; margin-top: 40px;">
+{{else}}
+        <h1 align="center">Pending EPE Forms</h1>
 
-    <p>The dummy functions on the server end are generating MongoDB ids rather than fetching them from the database.</p>
-    <p>This page is basically identical to the /archive page, and the two can possibly be merged to avoid redundancy.</p>
+{{/if}}
+    <div style="margin-top: 40px;">
+        <table class="table table-hover table-sm table-bordered table-light">
+            <thead class="thead">
+            <th>SAP Number</th>
+            <th>Employee Name</th>
+            <th>Form ID</th>
+            </thead>
+            <tbody>
+            {{#each arrayOfForms}}
+                <tr class="row-click" data-href="/approve/{{this._id}}">
+                    <td>{{this.SAPNumber}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this._id}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
 
-    {{#if id}}
-    <p>You clicked the link for the form with id: {{id}}</p>
-    {{/if}}
-
-    {{#if epeForm}}
-    <p><b>Name:</b> {{epeForm.name}}</p>
-    <p><b>SAP:</b> {{epeForm.SAPNumber}}</p>
-    <p><b>Form Content:</b> {{epeForm.form.formContent}}</p>
-    <p><b>Approval Required From (SAP Numbers):</b></p>
-    <p>{{#each epeForm.approvalFrom}}{{this}} {{/each}}</p>
-
-    <form action="/approve/{{id}}" method="post">
-      SAP Number to approve form from:<br>
-      <input type="text" name="approvedBy">
-      <br>
-      <input type="submit" value="Approve">
-    </form>
-    <br>
-    {{/if}}
-
-    <table>
-      <tr>
-        <th>SAP Number</th>
-        <th>Employee Name</th>
-        <th>Form ID</th>
-        <th>Link</th>
-      </tr>
-      {{#each arrayOfForms}}
-      <tr>
-        <td>{{this.SAPNumber}}</td>
-        <td>{{this.name}}</td>
-        <td>{{this._id}}</td>
-        <td><a href="/approve/{{this._id}}">Link to Form</a></td>
-      </tr>
-      {{/each}}
-    </table>
-
+        </table>
+    </div>
+</div>
+<div style="margin-left: 30px;margin-top: 20px;margin-bottom: 20px;">
     <form action="/home" method="get">
-      <input type="submit" value="Home">
+        <input type="submit" value="Home">
     </form>
-
-  </body>
+</div>
+</body>
 </html>
