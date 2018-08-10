@@ -1,10 +1,6 @@
 var mongoose = require('mongoose');
 
 var EPEFormSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
   SAPNumber: {
     type: String,
     required: true
@@ -13,20 +9,11 @@ var EPEFormSchema = new mongoose.Schema({
     type: Object,
     required: true
   },
-  approvalRequired: {
-    type: Boolean,
-    required: true,
-    default: true
-  },
   approvalFrom: [{
-    type: String,
-    required: false
-  }],
-  archivedOn:{
-    type: Number,
-    required: false,
-    default: null
-  }
+    type: Object,
+    required: true
+  }]
+
 });
 
 var EPEForm = mongoose.model('EPEForm', EPEFormSchema);
