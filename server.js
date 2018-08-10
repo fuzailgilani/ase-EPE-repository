@@ -159,12 +159,9 @@ app.post('/create', (req,res) => {
     formData = {
       name: submittedFormData.employeeName,
       SAPNumber: submittedFormData.SAPNumber,
-      form: {
-        empTitle: submittedFormData.empTitle,
-        department: submittedFormData.department,
-        division: submittedFormData.division,
-        reportingPeriod: submittedFormData.reportingPeriod
-      },
+      empTitle: submittedFormData.empTitle,
+      department: submittedFormData.department,
+      division: submittedFormData.division,
       approvalFrom: getCurrentUserSuperiors()
     }
 
@@ -177,6 +174,12 @@ app.post('/create', (req,res) => {
     res.redirect('/create?errorMessages=%22Invalid%20SAP%20Length%22');
   }
 });
+
+app.post('/addgoals', (req, res) => {
+  console.log('POST addgoals');
+  console.log(reg.body);
+  //Add code to handle the array of Objects
+})
 
 // GET /approve - display list of forms still requiring approval
 app.get('/approve', (req,res) => {
