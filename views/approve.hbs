@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         jQuery(document).ready(function($) {
             $(".row-click").click(function() {
@@ -41,6 +42,12 @@
     </div>
 </nav>
 {{#if id}}
+    {{#if message}}
+        <script>swal("Success","{{message}}", "success");</script>
+    {{/if}}
+    {{#if failure}}
+        <script>swal("Oops", "Form {{id}} approval encountered an error!", "error");</script>
+    {{/if}}
     <div style="margin-top: 30px;">
         <h1 align="center">Form: {{id}}</h1>
     </div>
@@ -48,12 +55,12 @@
 
 {{#if epeForm}}
     <div  style="margin-left:30px;margin-right:50%; margin-top: 40px;">
-        <table class="table table-bordered table-light">
+        <table class="table table-bordered table-light table-sm">
             <tbody>
-            <tr><td><b>Name:</b></td> <td>{{epeForm.name}}</td></tr>
-            <tr><td><b>SAP:</b></td> <td>{{epeForm.SAPNumber}}</td></tr>
-            <tr><td><b>Form Content:</b></td> <td>{{epeForm.form.formContent}}</td></tr>
-            <tr><td><b>Approval Required From (SAP Numbers):</b></td>
+            <tr><td style="background-color:#F1F3F5;" width="200"><b>Name:</b></td> <td>{{epeForm.name}}</td></tr>
+            <tr><td style="background-color:#F1F3F5;"><b>SAP:</b></td> <td>{{epeForm.SAPNumber}}</td></tr>
+            <tr><td style="background-color:#F1F3F5;"><b>Form Content:</b></td> <td>{{epeForm.form.formContent}}</td></tr>
+            <tr><td style="background-color:#F1F3F5;"><b>Approval Required From (SAP Numbers):</b></td>
                 <td>
                     {{#each epeForm.approvalFrom}}{{this}}, {{/each}}
             </tr></tbody>
@@ -63,10 +70,10 @@
         </table>
         <form action="/approve/{{id}}" method="post">
             SAP Number to approve form from:<br>
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px;">
                 <input type="text" name="approvedBy" placeholder="SAP Number">
             </div>
-            <input type="submit" value="Approve">
+            <input type="submit" value="Approve" class="btn btn-default btn-xs" style="background-color:#7cd1f9;color:white;">
         </form>
         <br>
     </div>
@@ -78,7 +85,7 @@
 {{/if}}
 <div  style="margin-left:30px;margin-right:50%; margin-top: 30px;">
         <table class="table table-hover table-sm table-bordered table-light">
-            <thead class="thead">
+            <thead class="thead" style="background-color: #f1f3f5">
             <th>SAP Number</th>
             <th>Employee Name</th>
             <th>Form ID</th>
@@ -97,7 +104,7 @@
     </div>
 <div style="margin-left: 30px;margin-top: 20px;margin-bottom: 20px;">
     <form action="/home" method="get">
-        <input type="submit" value="Home">
+        <input type="submit" value="Home"class="btn btn-default btn-xs" style="background-color:#7cd1f9;color:white;">
     </form>
 </div>
 </body>

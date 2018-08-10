@@ -195,19 +195,18 @@ app.get('/approve', (req,res) => {
 app.get('/approve/:id', (req,res) => {
   console.log('GET /approve/:id');
   console.log(req.query);
-
   // dummy username for now - authentication will be added later
   var userName = 'foobar';
 
   // id is fetched from request
   var id = req.params.id;
-
+  var message = req.query.message;
   // fetch the EPE data from database using ID - TODO error handling
   getEPEById(id).then((epeForm) => {
     // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
     getEPEsFromDB('approve', userName).then((arrayOfForms) => {
       // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
-      res.render('approve.hbs', {arrayOfForms, id, epeForm});
+    res.render('approve.hbs', {arrayOfForms, id, epeForm, message});
     });
   });
 });
@@ -256,15 +255,23 @@ app.post('/approve/:id', (req,res) => {
   var id = req.params.id;
   // pick SAP number of user who approved form from request body
   var body = _.pick(req.body, ['approvedBy']);
-
+var failure = "Approval Failed.";
   // dummy username for now - authentication will be added later
   var user = 'foobar';
 
   // update id using utility function in crud.js - TODO error handling
   approveEPE(id, body.approvedBy).then((newEpeForm) => {
     // on success, redirect to success page with message indicating which form was approved by which user
-    res.redirect(`/success?message=Form%20${newEpeForm._id.toHexString()}%20approved%20by%20SAP%20number%20${body.approvedBy}`);
-  });
+    res.redirect(`/approve/${newEpeForm._id}?message=Form%20${newEpeForm._id.toHexString()}%20approved%20by%20SAP%20number%20${body.approvedBy}`);
+  }, function() {
+      getEPEById(id).then((epeForm) => {
+          // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
+          getEPEsFromDB('approve', user).then((arrayOfForms) => {
+              // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
+              res.render('approve.hbs', {arrayOfForms, id, epeForm, failure});
+          });
+      });
+  })
 });
 
 // set up Express app to listen on specified port
