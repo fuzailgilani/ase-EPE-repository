@@ -177,9 +177,9 @@ app.post('/create', (req,res) => {
 
 app.post('/addgoals', (req, res) => {
   console.log('POST addgoals');
-  console.log(reg.body);
+  console.log(req.body);
   //Add code to handle the array of Objects
-})
+});
 
 // GET /approve - display list of forms still requiring approval
 app.get('/approve', (req,res) => {
