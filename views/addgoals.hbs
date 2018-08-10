@@ -8,25 +8,41 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
       <script>
-        var index = 2;
-        function change() {
-          var curr = document.getElementById("addarea").innerHTML;
-          var newText = " \
-          <div class=\"form-group row\"> \
-              <div class=\"col-1\"> \
-                <input type=\"text\" readonly class=\"form-control-plaintext\" \
-                name=\"spot"+index.toString()+"\" id=\"spot"+index.toString()+"\" value=\""+index.toString()+"\"> \
-              </div> \
-              <div class=\"col-2\"> \
-                <label for=\"goal"+index.toString()+"\">Goal: </label> \
-              </div> \
-              <div class=\"col-9\"> \
-                <textarea id=\"goal"+index.toString()+"\" rows=\"5\" cols=\"80\"></textarea> \
-              </div> \
-            </div>";
-          document.getElementById("addarea").innerHTML = curr+newText;
-          index++;
+        var index = 1;
+        var goalsArray = [];
+        function addGoal() {
+          var goalText = document.getElementById('currGoal').value;
+          var indexStr = index.toString();
+          var appendText = "<div class=\"row\"><div class=\"col-1\">Goal:</div><div class=\"col-11\">"+goalText+"</div></div>";
+          if (goalText != "") {
+            document.getElementById('goalsArea').innerHTML+=appendText;
+            document.getElementById('currGoal').value="";
+            goalsArray.push(goalText);
+            
+          }
         }
+
+        function submitGoals() {
+            var submitArray = [];
+            var pathToSubmit = "/addgoals";
+
+            for (index in goalsArray) {
+              var tempObj = {};
+              tempObj[index.toString()] = goalsArray[index];
+              submitArray.push(tempObj);
+            }
+            console.log(submitArray);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", pathToSubmit, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(submitArray);
+            
+        }
+
+          function debugPrint() {
+            console.log(goalsArray);
+          }
+        
       </script>
   </head>
   <body>
@@ -53,52 +69,23 @@
             </span>
           </div>
       </nav>
-      <h1><center>Rating Descriptions</center></h1>
-        <div class="jumbotron">
-          <div class="row">
-              <div class="col">
-                <h3>1-Improvement Needed</h3>
-                <p>Does not meet the requirements of the job, task, or project. Improvement is needed</p>
-              </div>
-              <div class="col">
-                <h3>2-Achieves Expectations</h3>
-                <p>Successfully meets the requirements of the job, task, or project. Performance consistently meets standards</p>  
-              </div>
-              <div class="col">
-                <h3>3-Exceeds Expectations</h3>
-                <p>Exceeds the performance of the job, task, or project. Performance is characterized by consistent high achievement</p>
-              </div>
-              <div class="col">
-                <h3>4-Outstanding</h3>
-                <p>Far exceeds the requirements of the job, task, or project. Performance consistently shows outstanding achievement far above expectations.</p>
-              </div>
-          </div>
-        </div>
+      
         <br /><br />
         <center>
           <h1>Section 1: Responsibilites, Goals, and Measures</h1>
           <p>70% of overall rating; evaluation weight assigned</p>
-          <br />
-          <button type="button" onclick="change()">Add</button>
         </center><br /><br />
+        <center><button onClick="javascript:submitGoals()">Submit</button></center><br /><br />
         <div class="jumbotron">
-          <form action="">
-            <div class="form-group row">
-              <div class="col-1">
-                <input type="text" readonly class="form-control-plaintext" name="spot1" id="spot1" value="1">
-              </div>
-              <div class="col-2">
-                <label for="goal1">Goal: </label>      
-              </div>
-              <div class="col-9">
-                <textarea id="goal1" rows="5" cols="80"></textarea>
-              </div>
+          <div class="container">
+            <div id="goalsArea">
+            
             </div>
-            <div id="addarea">
-              
-            </div>
-            <input type="submit" name="submit" value="Submit">
-          </form>
+          </div>
         </div>
+        <form action="Javascript:addGoal()">
+          <center><textarea rows="6" cols="50" id="currGoal"></textarea><center>
+            <input type="submit" name="Add" value="Add">
+        </form>
   </body>
 </html>
