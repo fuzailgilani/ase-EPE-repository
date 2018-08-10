@@ -20,13 +20,19 @@ var UserSchema = new mongoose.Schema({
   superiors: {
     type: Array,
     required: false
+  },
+  department: {
+    type: String,
+    required: true
+  },
+  division: {
+    type: String,
+      required: true
+  },
+  title: {
+    type: String,
+      required: true
   }
-  // email: {
-  //   required: true,
-  //   trim: true,
-  //   type: String,
-  //   minlength: 1
-  // }
 });
 
 var User = mongoose.model('User', UserSchema);
