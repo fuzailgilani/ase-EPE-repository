@@ -54,19 +54,31 @@
 {{/if}}
 
 {{#if epeForm}}
-    <div  style="margin-left:30px;margin-right:50%; margin-top: 40px;">
+    <div  style="margin-left:30px;margin-right:40%; margin-top: 40px;">
         <table class="table table-bordered table-light table-sm">
             <tbody>
-            <tr><td style="background-color:#F1F3F5;" width="200"><b>Name:</b></td> <td>{{epeForm.name}}</td></tr>
-            <tr><td style="background-color:#F1F3F5;"><b>SAP:</b></td> <td>{{epeForm.SAPNumber}}</td></tr>
-            <tr><td style="background-color:#F1F3F5;"><b>Form Content:</b></td> <td>{{epeForm.form.formContent}}</td></tr>
-            <tr><td style="background-color:#F1F3F5;"><b>Approval Required From (SAP Numbers):</b></td>
-                <td>
-                    {{#each epeForm.approvalFrom}}{{this}}, {{/each}}
-            </tr></tbody>
+            <tr><td style="background-color:#F1F3F5;" width="60"><b>Name:</b></td> <td colspan="100">{{epeForm.name}}</td></tr>
+            <tr><td style="background-color:#F1F3F5;" width="60"><b>SAP:</b></td> <td colspan="100">{{epeForm.SAPNumber}}</td></tr>
+            </tbody>
         </table>
-        </td></tr>
-        </tbody>
+
+        <table class="table table-bordered table-light table-sm">
+            <thead style="text-align: center; background-color: #f1f3f5;" class="thead">
+            <th style="background-color: white">
+            </th>
+            <th>Goal</th>
+            <th width="60">Rating</th>
+            </thead>
+            <tbody>
+            {{#each epeForm.formContent}} <tr><td style="background-color:#F1F3F5;" width="60"><b>Goal {{@index}}</b></td> <td >{{this.goal}}</td><td style="text-align: center;" >{{this.rating}}</td></tr>{{/each}}
+            </tbody>
+        </table>
+<table class="table table-bordered table-light table-sm">
+    <thead class="thead" style="background-color: #f1f3f5"><th colspan="80"><b>Approval Required From (SAP Numbers):</b></th>
+    <tbody>
+       <tr>{{#each epeForm.approvalFrom}}<td>{{this}}</td> {{/each}}</tr>
+    </thead>
+    </tbody>
         </table>
         <form action="/approve/{{id}}" method="post">
             SAP Number to approve form from:<br>
@@ -83,12 +95,13 @@
         <h1 align="center">Pending EPE Forms</h1>
     </div>
 {{/if}}
-<div  style="margin-left:30px;margin-right:50%; margin-top: 30px;">
+<div  style="margin-left:30px;margin-right:30px; margin-top: 30px;">
         <table class="table table-hover table-sm table-bordered table-light">
-            <thead class="thead" style="background-color: #f1f3f5">
+            <thead class="thead" style="background-color: #f1f3f5; text-align: center">
             <th>SAP Number</th>
             <th>Employee Name</th>
             <th>Form ID</th>
+            <th colspan="2">Goals</th>
             </thead>
             <tbody>
             {{#each arrayOfForms}}
@@ -96,6 +109,7 @@
                     <td>{{this.SAPNumber}}</td>
                     <td>{{this.name}}</td>
                     <td>{{this._id}}</td>
+                    {{#each this.formContent}}<td>{{this.goal}} </td>{{/each}}
                 </tr>
             {{/each}}
             </tbody>

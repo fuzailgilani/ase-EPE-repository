@@ -5,12 +5,22 @@ var EPEFormSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  form: [{
-    type: Object,
-    required: true
+    name: {
+        type: String,
+        required: true
+    },
+  formContent: [{
+  goal: {
+    type: String,
+      required: true
+  },
+      rating: {
+          type: Number,
+          required: true
+      },
   }],
   approvalFrom: [{
-    type: Object,
+    type: Number,
     required: true
   }],
   reportingPeriod: {
