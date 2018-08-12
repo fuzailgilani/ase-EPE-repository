@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Archive</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">SA EPE</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <span class="navbar-text">
+          <a href="/">Logout</a>
+        </span>
+    </div>
+</nav>
+<!--GET-->
+<!--JSON parse-->
+
+<script>
+    jQuery(document).ready(function() {
+
+        // Initially hide the goals
+        jQuery(".form-list").hide();
+
+        // Handling each individual form click toggle
+        jQuery(".forms").click(function() {
+            jQuery(this).next(".form-list").slideToggle();
+        });
+        jQuery(".forms").addClass("form-list");
+    });
+</script>
+
+<script>
+    function calculateAverage(formContent) {
+        var average = 0;
+        for(var i=0; i < formContent.rating.length(); i++){
+            average += formContent.rating[i];
+        }
+        average = average/i;
+        return average;
+    }
+</script>
+<script>
+    function indexOfForms(formContent){
+        var index = 0;
+        for (var j=0; i< formContent.length(); j++){
+            index+=j;
+        }
+        return j;
+    }
+</script>
+
+<div class="jumbotron">
+    <center><h3>Archived Evaluations</h3></center><br />
+    <form action="/archive/" method="get">
+        <center>
+            <div class="sap-get"> <span><input type="Submit" name="submitButton"></span>
+                <input type="text" name="SAP" class="sap-search" placeholder="SAP Number">
+            </div>
+            <!--<input type="submit" name="submitButton">-->
+        </center>
+    </form>
+</div>
+{{#if errorMessages}}
+    <script>
+        alert("SAP inputted incorrectly or not found! Pleases try again.");
+    </script>
+{{/if}}
+{{#if name}}
+    <script id="eval-template" type="text/x-handlebars-template">
+        <h3>SAP: {{SAP}} <span class="reportingPeriod">Reporting Period: {{repPeriod}}</span></h3>
+        <!--each form-->
+        <div class="forms">
+            <ul class="form-list">
+                {{#each epeForms}}
+                    <!--each formContent represented as a clickable toggle-->
+                    <li class="headline-bar">>{{indexOfForms formContent}}: {{this}}<span> Average Rating: {{calculateAverage formContent}}</span>
+                        <div class="info-column">
+                            <center>
+                                <ul class ="goal-list">
+                                    {{#each formContent}}
+                                        <li>{{{this.goal this.rating}}}</li>
+                                    {{/each}}
+                                </ul>
+                            </center>
+                        </div>
+                    </li>
+                {{/each}}
+            </ul>
+            </center>
+        </div>
+        </div>
+    </script>
+{{/if}}
+<!--// </script>-->
+
+</body>
+</html>
