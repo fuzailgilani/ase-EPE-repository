@@ -107,22 +107,15 @@
 						<h4>Enter in an SAP number for the EPE form you wish to add goal ratings to.</h4>
 					</center>
 
-					<!--<form action="/addgoals" method="get">
+					<form action="/addgoals" method="get">
 						<center>
 								<div class="sap-get">
 										<input type="text" name="SAPnum" class="sap-search" placeholder="SAP Number">
 										<input type="Submit" name="submitButton">
 								</div>
 						</center>
-					</form>-->
-          <form action="javascript:getGoals()" method="get">
-            <center>
-                <div class="sap-get">
-                    <input type="text" name="SAPnum" class="sap-search" placeholder="SAP Number" id="sapnum">
-                    <input type="Submit" name="submitButton">
-                </div>
-            </center>
-          </form>
+					</form>
+         
 
 					{{#if errorMessage}}
 						<center>

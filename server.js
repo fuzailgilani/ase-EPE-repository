@@ -121,7 +121,7 @@ app.get('/addgoals', (req,res) => {
       
         tempId = epeForms[epeForms.length - 1]._id.toHexString();
         
-        res.redirect('/addgoals?id='+tempId);
+        return res.redirect('/addgoals?id='+tempId);
       
       
     });
