@@ -109,10 +109,12 @@ app.get('/addgoals', (req,res) => {
   console.log('GET /addgoals');
   console.log(req.query);
 
+
   var query = _.pick(req.query, 'SAPnum', 'errorMessage', 'id');
   console.log(query.SAPnum);
   if(query.SAPnum) {
     getEPEsBySAP(query.SAPnum).then((epeForms) => {
+      console.log(epeForms.length);
       if(epeForms.length === 0) {
         return res.redirect('/addgoals?errorMessage=EPE%20form%20not%20found');
       }
