@@ -42,7 +42,7 @@
         }
         function getGoals() {
           var SAPnum = document.getElementById('sapnum').value;
-          var xhr = new XMTHttpRequest();
+          var xhr = new XMLHttpRequest();
           xhr.open("GET", '/addgoals');
           xhr.setRequestHeader("SAPnum", SAPnum);
           xhr.send()
