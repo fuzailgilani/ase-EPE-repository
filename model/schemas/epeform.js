@@ -1,10 +1,6 @@
 var mongoose = require('mongoose');
 
 var EPEFormSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
   SAPNumber: {
     type: String,
     required: true
@@ -47,6 +43,7 @@ var EPEFormSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
+
 });
 
 var EPEForm = mongoose.model('EPEForm', EPEFormSchema);

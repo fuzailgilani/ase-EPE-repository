@@ -68,6 +68,7 @@ app.post('/', (req,res) => {
   } else {
     res.redirect('/');
   }
+  //End dummy code
 });
 
 // GET /success - if any operation (creating form, updating form) is a success, redirect here
@@ -198,6 +199,21 @@ app.post('/rategoals', (req, res) => {
   })
 });
 
+app.get('/emphome', (req,res) => {
+  console.log('GET /emphome');
+  console.log(req.query);
+
+  res.render('emphome');
+});
+
+app.get('/archiveemp', (req,res) => {
+  console.log('GET /archiveemp');
+  console.log(req.query);
+
+  res.render('archiveemp');
+});
+//END dummy code
+
 // POST /create - validate whether form is ready for database or not
 app.post('/create', (req,res) => {
   console.log('POST /create');
@@ -231,6 +247,12 @@ app.post('/create', (req,res) => {
   }
 });
 
+app.post('/addgoals', (req, res) => {
+  console.log('POST addgoals');
+  console.log(req.body);
+  //Add code to handle the array of Objects
+});
+
 // GET /approve - display list of forms still requiring approval
 app.get('/approve', (req,res) => {
   console.log('GET /approve');
@@ -249,19 +271,18 @@ app.get('/approve', (req,res) => {
 app.get('/approve/:id', (req,res) => {
   console.log('GET /approve/:id');
   console.log(req.query);
-
   // dummy username for now - authentication will be added later
   var userName = 'foobar';
 
   // id is fetched from request
   var id = req.params.id;
-
+  var message = req.query.message;
   // fetch the EPE data from database using ID - TODO error handling
   getEPEById(id).then((epeForm) => {
     // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
     getEPEsFromDB('approve', userName).then((arrayOfForms) => {
       // render approve page with array of forms to be displayed in list, and id for specific form that was clicked
-      res.render('approve.hbs', {arrayOfForms, id, epeForm});
+    res.render('approve.hbs', {arrayOfForms, id, epeForm, message});
     });
   });
 });
