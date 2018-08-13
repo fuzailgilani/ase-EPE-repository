@@ -124,6 +124,7 @@ app.get('/addgoals', (req,res) => {
       
     });
   }
+  console.log(tempId);
   if(tempId != null) {
     return res.redirect(`/addgoals?id=${tempId}`);
   }
