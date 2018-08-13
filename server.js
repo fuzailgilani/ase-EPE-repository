@@ -121,12 +121,15 @@ app.get('/addgoals', (req,res) => {
       
         tempId = epeForms[epeForms.length - 1]._id.toHexString();
         res.setHeader(id, tempId);
-        res.redirece('/addgoals');
+        res.redirece('/addgoals?id='+tempId);
       
       
     });
   }
-  
+  console.log(tempId);
+  if(tempId != null) {
+    return res.redirect(`/addgoals?id=${tempId}`);
+  }
 
   if(query.id) {
     return res.render('addgoals.hbs', query);
