@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/home">SA EPE</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -39,11 +39,11 @@
           <a href="/">Logout</a>
         </span>
     </div>
-</nav>
-<!--GET-->
-<!--JSON parse-->
+  </nav>
+  <!--GET-->
+  <!--JSON parse-->
 
-<script>
+  <script>
     jQuery(document).ready(function() {
 
         // Initially hide the goals
@@ -54,9 +54,7 @@
         });
         jQuery(".forms").addClass("form-list");
     });
-</script>
-
-<script>
+    
     function calculateAverage(formContent) {
         var average = 0;
         for(var i=0; i < formContent.rating.length(); i++){
@@ -65,8 +63,7 @@
         average = average/i;
         return average;
     }
-</script>
-<script>
+
     function indexOfForms(formContent){
         var index = 0;
         for (var j=0; i< formContent.length(); j++){
@@ -74,22 +71,17 @@
         }
         return j;
     }
-</script>
-<!--
-
-
         // Initially hide the goals
-        jQuery(".form-list").hide();
+        /*
+      jQuery(".form-list").hide();
 
         // Handling each individual form click toggle
-        jQuery(".forms").click(function() {
-            jQuery(this).next(".form-list").slideToggle();
-        });
-        jQuery(".forms").addClass("form-list");
-    });
-</script>
--->
-<script>
+      jQuery(".forms").click(function() {
+           jQuery(this).next(".form-list").slideToggle();
+      });
+      jQuery(".forms").addClass("form-list");
+    }); 
+
     function calculateAverage(formContent) {
         var average = 0;
         for(var i=0; i < formContent.rating.length(); i++){
@@ -98,15 +90,14 @@
         average = average/i;
         return average;
     }
-</script>
-<script>
+
     function indexOfForms(formContent){
         var index = 0;
         for (var j=0; i< formContent.length(); j++){
             index+=j;
         }
         return j;
-    }
+    }*/
 </script>
 
 <div class="jumbotron">
@@ -155,7 +146,7 @@
 {{#if name}}
     <script id="eval-template" type="text/x-handlebars-template">
         <h3>SAP: {{SAP}} <span class="reportingPeriod">Reporting Period: {{repPeriod}}</span></h3>
-        <!--each form-->
+        <!-- each form -->
         <div class="forms">
             <ul class="form-list">
                 {{#each epeForms}}
