@@ -110,7 +110,7 @@ app.get('/addgoals', (req,res) => {
   console.log(req.query);
 
   var query = _.pick(req.query, 'SAPnum', 'errorMessage', 'id');
-
+  console.log(query.SAPnum);
   if(query.SAPnum) {
     getEPEsBySAP(query.SAPnum).then((epeForms) => {
       if(epeForms.length === 0) {
