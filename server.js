@@ -109,7 +109,7 @@ app.get('/addgoals', (req,res) => {
   console.log('GET /addgoals');
   console.log(req.query);
 
-
+  var tempId;
   var query = _.pick(req.query, 'SAPnum', 'errorMessage', 'id');
   console.log(query.SAPnum);
   if(query.SAPnum) {
@@ -119,11 +119,12 @@ app.get('/addgoals', (req,res) => {
         return res.redirect('/addgoals?errorMessage=EPE%20form%20not%20found');
       }
 
-      var tempId = epeForms[epeForms.length - 1]._id.toHexString();
+      tempId = epeForms[epeForms.length - 1]._id.toHexString();
 
-      return res.redirect(`/addgoals?id=${tempId}`);
+      
     });
   }
+  return res.redirect(`/addgoals?id=${tempId}`);
 
   if(query.id) {
     return res.render('addgoals.hbs', query);
