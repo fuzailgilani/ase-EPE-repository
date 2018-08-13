@@ -1,6 +1,14 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
+  userName: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   SAPNumber: {
     type: String,
     required: true
@@ -9,22 +17,24 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  password: {
+  subordinates: [{
     type: String,
     required: true
-  },
-  role: {
-    type: String,
-    required: true
-  },
-  subordinates: {
-    type: Array,
-    required: false
-  },
-  superiors: {
-    type: Array,
-    required: false
-  }
+  }],
+  tokens: [{
+    access: {
+      type: String,
+      required: true
+    },
+    token: {
+      type: String,
+      required: true
+    }
+  }]
+  // superiors: {
+  //   type: Array,
+  //   required: false
+  // }
   // email: {
   //   required: true,
   //   trim: true,

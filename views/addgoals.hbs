@@ -1,37 +1,121 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Add Goals</title>
-		<link rel="shortcut icon" href="/favicon.ico">
-    	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-      		<a class="navbar-brand" href="/home">SA EPE</a>
-      		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        		<span class="navbar-toggler-icon"></span>
-      		</button>
+  <head>
+    <title>Add Goals</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script>
+        var index = 1;
+        var goalsArray = [];
+        function addGoal() {
+          var goalText = document.getElementById('currGoal').value;
+          var indexStr = index.toString();
+          var appendText = "<div class=\"row\"><div class=\"col-1\">Goal:</div><div class=\"col-11\">"+goalText+"</div></div>";
+          if (goalText != "") {
+            document.getElementById('goalsArea').innerHTML+=appendText;
+            document.getElementById('currGoal').value="";
+            goalsArray.push(goalText);
 
-      		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-        		<ul class="navbar-nav mr-auto">
-          			<li class="nav-item active">
-            			<a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
-          			</li>
-          			<li class="nav-item active">
-            			<a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
-          			</li>
-          			<li class="nav-item active">
-            			<a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
-          			</li>
-        		</ul>
-        		<span class="navbar-text">
-          			<a href="/">Logout</a>
-        		</span>
-      		</div>
-    	</nav>
-    	<p>Currently filler, this will be the page used to add the goals for the individual. Will be stored in DB as a working draft so the final can be populated at the end of the period</p>
-	</body>
+          }
+        }
+        function submitGoals() {
+            var submitArray = [];
+						submitArray.push('{{id}}');
+            var pathToSubmit = "/addgoals";
+            for (index in goalsArray) {
+              var tempObj = {};
+              tempObj['goal'] = goalsArray[index];
+              submitArray.push(tempObj);
+            }
+            console.log(submitArray);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", pathToSubmit, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(submitArray));
+
+        }
+          function debugPrint() {
+            console.log(goalsArray);
+          }
+
+      </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="/home">SA EPE</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+							<li class="nav-item active">
+								<a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item active">
+								<a class="nav-link" href="/addgoals">Add Goals <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item active">
+								<a class="nav-link" href="/rategoals">Rate Goals <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item active">
+								<a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item active">
+								<a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+							</li>
+            </ul>
+            <span class="navbar-text">
+                <a href="/">Logout</a>
+            </span>
+          </div>
+      </nav>
+
+        <br /><br />
+
+				{{#if id}}
+        <center>
+          <h1>Section 1: Responsibilites, Goals, and Measures</h1>
+          <p>70% of overall rating; evaluation weight assigned</p>
+        </center><br /><br />
+        <center><button onClick="javascript:submitGoals()">Submit</button></center><br /><br />
+        <div class="jumbotron">
+          <div class="container">
+            <div id="goalsArea">
+
+            </div>
+          </div>
+        </div>
+        <form action="Javascript:addGoal()">
+          <center><textarea rows="6" cols="50" id="currGoal"></textarea><center>
+            <input type="submit" name="Add" value="Add">
+        </form>
+				{{else}}
+
+					<center>
+						<h1>Rate Goals</h1>
+						<h4>Enter in an SAP number for the EPE form you wish to add goal ratings to.</h4>
+					</center>
+
+					<form action="/addgoals" method="get">
+						<center>
+								<div class="sap-get">
+										<input type="text" name="SAPnum" class="sap-search" placeholder="SAP Number">
+										<input type="Submit" name="submitButton">
+								</div>
+						</center>
+					</form>
+
+					{{#if errorMessage}}
+						<center>
+							<p style="color:red;">
+								{{errorMessage}}
+							</p>
+						</center>
+					{{/if}}
+				{{/if}}
+  </body>
 </html>

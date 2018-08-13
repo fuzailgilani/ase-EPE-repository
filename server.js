@@ -9,7 +9,7 @@ const hbs = require('hbs');
 var {mongoose} = require('./model/mongoose');
 var {EPEForm} = require('./model/schemas/epeform');
 var {User} = require('./model/schemas/user');
-var {getEPEsFromDB, verifyCredentials, submitForm, getEPEById, approveEPE} = require('./model/crud');
+var {getEPEsFromDB, verifyCredentials, submitForm, getEPEById, getEPEsBySAP, approveEPE, addGoals, addRatings} = require('./model/crud');
 
 var app = express();
 const port = process.env.PORT;
@@ -57,11 +57,13 @@ app.post('/', (req,res) => {
   // if user typed in username and password into form
   if (loginCredentials.userName != "" && loginCredentials.password != "") {
     // verify credentials and redirect appropriately (to GET /home if success, to GET / with error message if not)
-    if (verifyCredentials(loginCredentials)){
-       res.redirect('/home')
-    }  else {
-      res.redirect('/?errorMessage=Invalid%20login%20credentials')
-    }
+    verifyCredentials(loginCredentials).then((user) => {
+      if(user.length === 1) {
+        res.redirect('/home');
+      } else {
+        res.redirect('/?errorMessage=Invalid%20login%20credentials');
+      }
+    });
   // if user did not include username or pass, then redirect to GET / without any message
   } else {
     res.redirect('/');
@@ -106,8 +108,94 @@ app.get('/addgoals', (req,res) => {
   console.log('GET /addgoals');
   console.log(req.query);
 
-  res.render('getgoals.hbs');
+  var query = _.pick(req.query, 'SAPnum', 'errorMessage', 'id');
 
+  if(query.SAPnum) {
+    getEPEsBySAP(query.SAPnum).then((epeForms) => {
+      if(epeForms.length === 0) {
+        return res.redirect('/addgoals?errorMessage=EPE%20form%20not%20found');
+      }
+
+      var tempId = epeForms[epeForms.length - 1]._id.toHexString();
+
+      return res.redirect(`/addgoals?id=${tempId}`);
+    });
+  }
+
+  if(query.id) {
+    return res.render('addgoals.hbs', query);
+  }
+
+  if(query.errorMessage) {
+    return res.render('addgoals.hbs', query);
+  } else {
+    return res.render('addgoals.hbs');
+  }
+
+});
+
+app.post('/addgoals', (req, res) => {
+  console.log('POST /addgoals');
+  console.log(req.body);
+
+  id = req.body.shift();
+
+  addGoals(id, req.body).then((newEpeForm) => {
+    res.render('success.hbs', {message: 'Goals added to EPE form!'});
+  });
+});
+
+app.get('/rategoals', (req,res) => {
+  console.log('GET /rategoals');
+  console.log(req.query);
+
+  var query = _.pick(req.query, 'SAPnum', 'errorMessage', 'id', 'goals');
+
+  if(query.SAPnum) {
+    getEPEsBySAP(query.SAPnum).then((epeForms) => {
+      if(epeForms.length === 0) {
+        return res.redirect('/rategoals?errorMessage=EPE%20form%20not%20found');
+      }
+
+      var tempId = epeForms[epeForms.length - 1]._id.toHexString();
+
+      var tempGoals = JSON.stringify(epeForms[epeForms.length - 1].formContent);
+
+      return res.redirect(`/rategoals?id=${tempId}&goals=${encodeURI(tempGoals)}`);
+    });
+  }
+
+  if(query.id) {
+    query.goals = JSON.parse(query.goals);
+    return res.render('rategoals.hbs', query);
+  }
+
+  if(query.errorMessage) {
+    return res.render('rategoals.hbs', query);
+  } else {
+    return res.render('rategoals.hbs');
+  }
+
+});
+
+app.post('/rategoals', (req, res) => {
+  console.log('POST /rategoals');
+  console.log(req.body);
+  var id;
+  var ratingPatt = /rating[0-9]/;
+  var ratings = {};
+
+  for(var property in req.body) {
+    if(ratingPatt.test(property)) {
+      ratings[property[6]] = req.body[property];
+    } else {
+      id = property;
+    }
+  }
+
+  addRatings(id, ratings).then((newEpeForm) => {
+    res.render('success.hbs', {message: 'Ratings added to EPE form!'});
+  })
 });
 
 // POST /create - validate whether form is ready for database or not
@@ -123,18 +211,19 @@ app.post('/create', (req,res) => {
     formData = {
       name: submittedFormData.employeeName,
       SAPNumber: submittedFormData.SAPNumber,
-      form: {
-        empTitle: submittedFormData.empTitle,
-        department: submittedFormData.department,
-        division: submittedFormData.division,
-        reportingPeriod: submittedFormData.reportingPeriod
-      },
-      approvalFrom: getCurrentUserSuperiors()
+      empTitle: submittedFormData.empTitle,
+      department: submittedFormData.department,
+      division: submittedFormData.division,
+      formContent: [],
+      approvalFrom: ['123456'],
+      approvalRequired: true,
+      reportingPeriod: submittedFormData.reportingPeriod,
+      dateCreated: new Date().getTime()
     }
 
     // then submit form using submitForm function from crud.js - TODO error handling
     submitForm(formData).then((doc) => {
-      res.redirect('/addgoals');
+      res.redirect('/success?message=%22Form%20created%20successfully!%22');
     });
   // if form is invalidly submitted, redirect with error messages to GET /create
   } else {
@@ -146,6 +235,7 @@ app.post('/create', (req,res) => {
 app.get('/approve', (req,res) => {
   console.log('GET /approve');
   console.log(req.query);
+
   // dummy username for now - authentication will be added later
   var userName = 'foobar';
   // fetch array of EPE forms requiring approval from database using crud.js - TODO error handling
@@ -181,17 +271,60 @@ app.get('/archive', (req,res) => {
   console.log('GET /archive');
   console.log(req.query);
 
-  // dummy username for now - authentication will be added later
-  var userName = 'foobar';
+  // pick out SAP number if exists
+  var query = _.pick(req.query, ['SAPnum']);
 
-  // fetch array of archived EPE forms from database using crud.js - TODO error handling
-  getEPEsFromDB('archive', userName).then((arrayOfForms) => {
-    // render archive page with array of forms to be displayed in list
-    res.render('archive.hbs', {arrayOfForms});
-  });
+  // if query contains SAP num submitted by user
+  if (query.SAPnum) {
+
+    // if user found, query database for EPE forms associated with user
+    getEPEsBySAP(query.SAPnum).then((epeForms) => {
+      if(epeForms.length === 0) {
+        return res.render('archive.hbs', {errorMessage: 'Error: no EPE forms associated with this SAP number'});
+      }
+
+      var i;
+      var counter = 0;
+      var overallAvg = 0;
+
+      for(i = 0; i < epeForms.length; i++) {
+        var j;
+        var average = 0;
+        for(j = 0; j < epeForms[i].formContent.length; j++) {
+          overallAvg += epeForms[i].formContent[j].rating;
+          average += epeForms[i].formContent[j].rating;
+          counter++;
+        }
+        average = average / j;
+        epeForms[i].average = average;
+        // epeForms[i].dateCreated = epeForms[i].dateCreated.toDateString();
+      }
+
+      overallAvg = overallAvg / counter;
+
+      // if no error, construct object containing data to send to archive.hbs
+      var pageData = {
+        overallAvg,
+        SAPnum: query.SAPnum,
+        name: epeForms[0].name,
+        epeForms
+      }
+
+      console.log(pageData);
+      // render archive.hbs with page data
+      return res.render('archive.hbs', pageData);
+    }).catch((err) => {
+      // if some error when finding EPE forms, render archive.hbs with database error message
+      return res.render('archive.hbs', {errorMessage: 'Error: server error, contact system administrator'});
+    });
+  } else {
+    // if user did not query search function, then render archive.hbs with no data
+    res.render('archive.hbs');
+  }
 });
 
 // GET /archive/:id - display form specified by id above list of other archived forms
+// UNUSED FOR NOW
 app.get('/archive/:id', (req,res) => {
   console.log('GET /archive/:id');
   console.log(req.query);
@@ -219,15 +352,11 @@ app.post('/approve/:id', (req,res) => {
   // pick id from request parameters
   var id = req.params.id;
   // pick SAP number of user who approved form from request body
-  var body = _.pick(req.body, ['approvedBy']);
-
-  // dummy username for now - authentication will be added later
-  var user = 'foobar';
 
   // update id using utility function in crud.js - TODO error handling
-  approveEPE(id, body.approvedBy).then((newEpeForm) => {
+  approveEPE(id, '123456').then((newEpeForm) => {
     // on success, redirect to success page with message indicating which form was approved by which user
-    res.redirect(`/success?message=Form%20${newEpeForm._id.toHexString()}%20approved%20by%20SAP%20number%20${body.approvedBy}`);
+    res.redirect(`/success?message=Form%20${newEpeForm._id.toHexString()}%20approved%20by%20SAP%20number%20123456`);
   });
 });
 
@@ -238,57 +367,3 @@ app.listen(port, () => {
 
 // export Express app object for use in tests - currently no tests set up
 module.exports = {app};
-
-/*
-ROUTES TO DEFINE
-  / routes
-    GET /
-      if request contains error message, display that above login form
-      login form
-    POST /
-      validate login
-      if validated, redirect to home
-      else, send GET / request with error message in request
-
-  /home routes
-    GET /home
-      display buttons for create, approve, archive
-
-  /create routes
-    GET /create
-      displays form for EPE, with any errors if request contains them
-
-    POST /create
-      validates form before entry into database
-        if valid, sends to database
-        else, send to GET /create with error messages in request
-
-  /approve routes // TODO
-    GET /approve/:id
-      check if request contains id of EPEForm
-        if request contains id, fetch form from database and display it
-          below form, have approve button that when clicked, sends PATCH /approve request
-        else do nothing
-
-    GET /approve // TODO
-      query database for all forms requiring approval from current User
-        display list of links in table, with employee name and SAP number
-          link sends GET /approve/:id request with id in request
-
-    POST /approve/:id // TODO
-      fetch EPEForm that corresponds to id in request from database
-        remove current user from approvalFrom array
-        check if approvalFrom array is now empty
-        if empty, set approvalReq to false
-
-  /archive routes // TODO
-    GET /archive/:id
-      check if request contains id of EPEform
-      if request contains id, fetch form from database and display it
-      else do nothing
-
-    GET /archive
-      query database for all forms that are archived
-      display list of links in table, with employee name and SAP number
-        link sends GET /archive/:id request with id in request
-*/

@@ -4,7 +4,9 @@ const {ObjectID} = require('mongodb');
 var {EPEForm} = require('./schemas/epeform');
 var {User} = require('./schemas/user');
 // utility function to submit form - TODO error handling
+
 var submitForm = (formData) => {
+
   // create EPEForm object with data passed in argument
   var newEPEForm = new EPEForm(formData);
 
@@ -12,6 +14,7 @@ var submitForm = (formData) => {
   return newEPEForm.save().then((doc) => {
     return doc;
   }, (err) => {
+    console.log(err);
     res.redirect('/error?message=Form%20creation%20unsuccessful');
   });
 };
@@ -53,6 +56,75 @@ var getEPEById = (id) => {
   });
 };
 
+var getEPEsBySAP = (SAPNumber) => {
+  return EPEForm.find({SAPNumber}).then((epeForms) => {
+    return epeForms;
+  }, (err) => {
+    console.log(err);
+  });
+};
+
+var addGoals = (id, goals) => {
+  if (!ObjectID.isValid(id)) {
+    return Promise.reject();
+  }
+
+  return EPEForm.findById(id).then((epeForm) => {
+    if (!epeForm) {
+      return Promise.reject();
+    }
+
+    var body = {};
+
+    body.formContent = epeForm.formContent;
+
+    var i;
+    for (i = 0; i < goals.length; i++){
+      body.formContent.push(goals[i]);
+    }
+
+    return EPEForm.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newEpeForm) => {
+      if(!newEpeForm){
+        return Promise.reject();
+      }
+      return newEpeForm;
+    });
+  }).catch((err) => {
+    console.log(err);
+    return Promise.reject();
+  });
+};
+
+var addRatings = (id, ratings) => {
+  if(!ObjectID.isValid(id)) {
+    return Promise.reject();
+  }
+
+  return EPEForm.findById(id).then((epeForm) => {
+    if (!epeForm) {
+      return Promise.reject();
+    }
+    var body = {};
+
+    body.formContent = epeForm.formContent;
+
+    for(var index in ratings) {
+      body.formContent[parseInt(index)].rating = parseInt(ratings[index]);
+    }
+
+    console.log(body);
+    return EPEForm.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newEpeForm) => {
+      if(!newEpeForm) {
+        return Promise.reject();
+      }
+      return newEpeForm;
+    });
+  }).catch((err) => {
+    console.log(err);
+    return Promise.reject();
+  });
+};
+
 // utility function to approve an EPE from the current user
 var approveEPE = (id, approvedBy) => {
   // check if the id string is a valid mongodb ObjectID
@@ -89,7 +161,7 @@ var approveEPE = (id, approvedBy) => {
       }
 
       // update the epe with the appropriate changes, and return the modified EPE body
-      return EPEForm.findByIdAndUpdate(id, {$set: body}, {new: true},).then((newEpeForm) => {
+      return EPEForm.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newEpeForm) => {
         if(!newEpeForm){
           return Promise.reject();
         }
@@ -106,31 +178,12 @@ var approveEPE = (id, approvedBy) => {
 
 // utility function to verify login credentials; dummy function for now - TODO incorporate authentication
 var verifyCredentials = (loginCredentials) => {
-  const dummyLoginCredentials = [{
-      userName: "employee1",
-      pass: "password1"
-    },{
-      userName: "employee2",
-      pass: "password2"
-    },{
-      userName: "employee3",
-      password: "password3"
-    },{
-      userName: "employee4",
-      pass: "password4"
-    },{
-      userName: "employee5",
-      pass: "password5"
-    }
-  ];
-  var i;
-  for(i = 0; i < dummyLoginCredentials.length; i++){
-    if(dummyLoginCredentials[i].userName === loginCredentials.userName && dummyLoginCredentials[i].pass === loginCredentials.password){
-      return true;
-    }
-  }
-  return false;
+  return User.find(loginCredentials).then((user) => {
+    return user;
+  }, (err) => {
+    console.log(err);
+  });
 };
 
 // export crud functions for use in server.js
-module.exports = {getEPEsFromDB, verifyCredentials, submitForm, getEPEById, approveEPE};
+module.exports = {getEPEsFromDB, verifyCredentials, submitForm, getEPEById, getEPEsBySAP, approveEPE, addGoals, addRatings};

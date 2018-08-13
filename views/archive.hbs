@@ -1,74 +1,111 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>View Archive</title>
+<head>
+    <title>Employee Archive</title>
     <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/home">SA EPE</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">SA EPE</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
-      </li>
-    </ul>
-    <span class="navbar-text">
-      <a href="/">Logout</a>
-    </span>
-  </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/create">New Eval <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/addgoals">Add Goals <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/rategoals">Rate Goals <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/approve">Requiring Approval <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/archive">Archived Evals <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <a href="/">Logout</a>
+        </span>
+    </div>
 </nav>
-    <h1>This is a dummy archive page. Press the home button or a link.</h1>
+<!--GET-->
+<!--JSON parse-->
 
-    <p>The dummy functions on the server end are generating MongoDB ids rather than fetching them from the database.</p>
-    <p>This page is basically identical to the /approve page, and the two can possibly be merged to avoid redundancy.</p>
+<script>
+    jQuery(document).ready(function() {
+        // Initially hide the goals
+        jQuery(".form-list").hide();
+        // Handling each individual form click toggle
+        jQuery(".forms").click(function() {
+            jQuery(this).next(".form-list").slideToggle();
+        });
+        jQuery(".forms").addClass("form-list");
+    });
+</script>
 
-    {{#if id}}
-    <p>You clicked the link for the form with id: {{id}}</p>
-    {{/if}}
+<script>
+    function calculateAverage(formContent) {
+        var average = 0;
+        for(var i=0; i < formContent.rating.length(); i++){
+            average += formContent.rating[i];
+        }
+        average = average/i;
+        return average;
+    }
+</script>
+<script>
+    function indexOfForms(formContent){
+        var index = 0;
+        for (var j=0; i< formContent.length(); j++){
+            index+=j;
+        }
+        return j;
+    }
+</script>
 
-    {{#if epeForm}}
-    <p><b>Name:</b> {{epeForm.name}}</p>
-    <p><b>SAP:</b> {{epeForm.SAPNumber}}</p>
-    <p><b>Form Content:</b> {{epeForm.form.formContent}}</p>
-    <p><b>Archived on:</b> {{archivedOn}}</p>
-    {{/if}}
-
-    <table>
-      <tr>
-        <th>SAP Number</th>
-        <th>Employee Name</th>
-        <th>Form ID</th>
-        <th>Link</th>
-      </tr>
-      {{#each arrayOfForms}}
-      <tr>
-        <td>{{this.SAPNumber}}</td>
-        <td>{{this.name}}</td>
-        <td>{{this._id}}</td>
-        <td><a href="/archive/{{this._id}}">Link to Form</a></td>
-      </tr>
-      {{/each}}
-    </table>
-
-    <form action="/home" method="get">
-      <input type="submit" value="Home">
+<div class="jumbotron">
+    <center><h3>Archived Evaluations</h3></center><br />
+    <form action="/archive/" method="get">
+        <center>
+            <div class="sap-get">
+                <input type="text" name="SAPnum" class="sap-search" placeholder="SAP Number">
+                <input type="Submit" name="submitButton">
+            </div>
+        </center>
     </form>
+</div>
+{{#if errorMessage}}
+    <script>
+        alert("{{errorMessage}}");
+    </script>
+{{/if}}
+{{#if name}}
+        <h1>Name: {{name}}</h1>
+        <h1>SAP Number: {{SAPnum}}</h1>
+        <h3>Overall average rating: {{overallAvg}}</h3><br />
+        <!--each form-->
+        {{#each epeForms}}
+          <!-- <h4>Date created: {{this.dateCreated}}</h4> -->
+          <h4>Average for form #{{@index}}: {{this.average}}</h4>
+          <h5>Goals and ratings:</h5>
+          {{#each this.formContent}}
+            <p>Goal #{{@index}}: {{this.goal}} - received a rating of: {{this.rating}}</p>
+          {{/each}}
+          <br /><br />
+        {{/each}}
+{{/if}}
+<!--// </script>-->
 
-  </body>
+</body>
 </html>

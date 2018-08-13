@@ -9,23 +9,43 @@ var EPEFormSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  form: {
-    type: Object,
+  empTitle: {
+    type: String,
     required: true
   },
-  approvalRequired: {
-    type: Boolean,
-    required: true,
-    default: true
+  department: {
+    type: String,
+    required: true
   },
+  division: {
+    type: String,
+    required: true
+  },
+  formContent: [{
+    goal: {
+      type: String,
+      required: true
+    },
+    rating: {
+      type: Number,
+      required: false
+    }
+  }],
   approvalFrom: [{
     type: String,
-    required: false
+    required: true
   }],
-  archivedOn:{
+  approvalRequired: {
+    type: Boolean,
+    required: true
+  },
+  reportingPeriod: {
+    type:String,
+    required:true
+  },
+  dateCreated: {
     type: Number,
-    required: false,
-    default: null
+    required: true
   }
 });
 
