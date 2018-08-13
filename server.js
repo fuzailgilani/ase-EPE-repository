@@ -118,13 +118,15 @@ app.get('/addgoals', (req,res) => {
       if(epeForms.length === 0) {
         return res.redirect('/addgoals?errorMessage=EPE%20form%20not%20found');
       }
-      if (tempId != null) {
+      
         tempId = epeForms[epeForms.length - 1]._id.toHexString();
-      }
+      
       
     });
   }
-  return res.redirect(`/addgoals?id=${tempId}`);
+  if(tempId != null) {
+    return res.redirect(`/addgoals?id=${tempId}`);
+  }
 
   if(query.id) {
     return res.render('addgoals.hbs', query);
